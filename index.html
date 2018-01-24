@@ -2,14 +2,24 @@
 <!doctype html>
 <html>
   <head>
-    <title>Getting Cozy with Browserify</title>
+    <title>Gchat Analysis</title>
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
-    <div>
-      Hello
+    <div id='welcome-view'>
+      <div>
+        <textarea></textarea>
+      </div>
+      <div>
+        <button id ='submit-btn'>Submit</button>
+      </div>
     </div>
-    <script src="js/main.js"></script>
+
+    <div id ='chart-vew' hidden>
+      <h1>Data</h1>
+    </div>
+
+    <!-- <script src="main.js"></script> -->
     <script src="bundle.js"></script>
   </body>
 </html>

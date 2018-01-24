@@ -1,0 +1,35 @@
+const re = require('./regular-expression.js');
+
+function splitTextByKey(re, str, process, acc){
+  var myArray;
+  const indices = [];
+  while ((myArray = re.exec(str)) !== null) {
+    indices.push({start: myArray.index, end: re.lastIndex})
+  }
+  for(var i=0; i<indices.length;i++){
+    const nextIndex = indices[i+1]? indices[i+1].start : str.length;
+    const key = str.substring(indices[i].start, indices[i].end);
+    const value = str.substring(indices[i].end, nextIndex)
+    acc = process(key, value, acc)
+  }
+  return acc;
+}
+
+function processByDateAndName(match, textChunk, acc){
+  const nameRe = /(E. Bogdan|Sarah Geselowitz)/g
+	const date = new Date(match);
+  const newTexts = splitTextByKey(nameRe, textChunk, (match, followingText, acc)=>{
+    acc.push({sender: match, text: followingText, date: date})
+    return acc;
+  }, []);
+  return acc.concat(newTexts);
+}
+
+
+function parse(chats){
+  return splitTextByKey(re.timeStamp,chats, processByDateAndName, []);
+}
+
+module.exports = {
+  parse: parse
+}
