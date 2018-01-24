@@ -1,1 +1,4 @@
-browserify main.js -o bundle.js
+npm install --global browserify
+npm install --global watchify
+
+watchify main.js -o bundle.js -v

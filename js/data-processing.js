@@ -1,36 +1,43 @@
+const enums = require('./enum.js');
+
 function determineScale(data){
   const times1 = data.map( (d) => { d.date.getTime()});
   const times = data.map( (d) => d.date.getTime());
   const diffMs = Math.max(...times) - Math.min(...times);
   const diffDays = msToDays(diffMs);
   if(diffDays < 60){
-    return Scale.day;
+    return enums.Scale.day;
   }
   if(diffDays < 150){
-    return Scale.week;
+    return enums.Scale.week;
   }
   if(diffDays < 900){
-    return Scale.month;
+    return enums.Scale.month;
   }
-  return Scale.year;
+  return enums.Scale.year;
 }
 
-function getWordFrequency(data, scale, re){
+function msToDays(ms){
+  return ms / (1000*60*60*24);
+}
+
+function getWordFrequency(data, scale, searchValue){
+  const re = new RegExp(searchValue, "gi");
   const dateToFrequency =
     data.reduce( (acc, d) => {
       const date = new Date(d.date);
       const time = date.getTime();
       let key;
-      if(scale == Scale.day){
-        key = Math.floor(msToDays(time)) //TODO: rethink
+      if(scale == enums.Scale.day){
+        key = new Date(date.getFullYear(), date.getMonth(), date.getDay())
       }
-      else if(scale == Scale.week){
-        key = Math.floor(msToWeeks(time)) //TODO: rethink
+      else if(scale == enums.Scale.week){
+        key = new Date(date.getFullYear(), date.getMonth(), date.getDay()) //TODO: rethink
       }
-      else if(scale == Scale.month){
+      else if(scale == enums.Scale.month){
         key = new Date(date.getFullYear(), date.getMonth(), 1)
       }
-      else if(scale == Scale.year){
+      else if(scale == enums.Scale.year){
         key = new Date(date.getFullYear(), 0, 1) //TODO: rethink
       }
       if(!acc[key]){
@@ -43,10 +50,9 @@ function getWordFrequency(data, scale, re){
       return acc;
     }, {})
   return Object.keys(dateToFrequency).reduce( (acc, key)=>{
-    acc.push({date: key, scale: scale, counts: dateToFrequency[key]})
+    acc.push({date: new Date(key), scale: scale, counts: dateToFrequency[key]})
     return acc;
   }, [])
-
 }
 
 function countMatches(re, str){
@@ -56,4 +62,10 @@ function countMatches(re, str){
     count++;
   }
   return count;
+}
+
+
+module.exports = {
+  getWordFrequency: getWordFrequency,
+  determineScale: determineScale
 }

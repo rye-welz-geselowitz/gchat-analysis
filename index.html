@@ -8,15 +8,21 @@
   <body>
     <div id='welcome-view'>
       <div>
-        <textarea></textarea>
+        <input placeholder='Your name' id ='your-name-input'/>
+        <input placeholder='Their name' id ='their-name-input'/>
+        <input id='search-input' placeholder="Word or phrase..."/>
+        <button id='load-sample-data-btn'>Load Sample Data</button>
+      </div>
+      <div>
+        <textarea id ='chats-input'></textarea>
       </div>
       <div>
         <button id ='submit-btn'>Submit</button>
       </div>
     </div>
 
-    <div id ='chart-vew' hidden>
-      <h1>Data</h1>
+    <div id ='chart-view' class='hidden'>
+    <button id ='back-btn'>Back</button>
     </div>
 
     <!-- <script src="main.js"></script> -->

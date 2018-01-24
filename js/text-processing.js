@@ -15,8 +15,7 @@ function splitTextByKey(re, str, process, acc){
   return acc;
 }
 
-function processByDateAndName(match, textChunk, acc){
-  const nameRe = /(E. Bogdan|Sarah Geselowitz)/g
+function processByDateAndName(nameRe, match, textChunk, acc){
 	const date = new Date(match);
   const newTexts = splitTextByKey(nameRe, textChunk, (match, followingText, acc)=>{
     acc.push({sender: match, text: followingText, date: date})
@@ -26,8 +25,9 @@ function processByDateAndName(match, textChunk, acc){
 }
 
 
-function parse(chats){
-  return splitTextByKey(re.timeStamp,chats, processByDateAndName, []);
+function parse(chats, name1, name2){
+  const nameRe = new RegExp(name1+"|"+name2, "g");
+  return splitTextByKey(re.timeStamp, chats, processByDateAndName.bind(this, nameRe), []);
 }
 
 module.exports = {
