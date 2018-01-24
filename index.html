@@ -8,15 +8,18 @@
   <body>
     <div id='welcome-view'>
       <div>
-        <input placeholder='Your name' id ='your-name-input'/>
-        <input placeholder='Their name' id ='their-name-input'/>
+        <input  id ='your-name-input' placeholder='Your name'/>
+        <input id ='their-name-input' placeholder='Their name'/>
         <input id='search-input' placeholder="Word or phrase..."/>
+      </div>
+      <div>
+        <p>Paste your google chat history below.</p>
+        <textarea id ='chats-input'>
+        </textarea>
+      </div>
+      <div>
         <button id='load-sample-data-btn'>Load Sample Data</button>
-      </div>
-      <div>
-        <textarea id ='chats-input'></textarea>
-      </div>
-      <div>
+        <button id='clear-btn'>Clear</button>
         <button id ='submit-btn'>Submit</button>
       </div>
     </div>

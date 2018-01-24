@@ -50,7 +50,7 @@ function getWordFrequency(data, scale, searchValue){
       return acc;
     }, {})
   return Object.keys(dateToFrequency).reduce( (acc, key)=>{
-    acc.push({date: new Date(key), scale: scale, counts: dateToFrequency[key]})
+    acc.push({date: new Date(key), counts: dateToFrequency[key]})
     return acc;
   }, [])
 }

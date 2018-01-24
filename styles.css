@@ -6,3 +6,12 @@
   stroke: steelblue;
   stroke-width: 2px;
 }
+
+textarea{
+	width: 80%;
+	height: 200px;
+	border: solid 1px steelblue;
+	padding: 5px;
+  margin: 10px;
+  resize: none;
+}

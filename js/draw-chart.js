@@ -1,6 +1,10 @@
 const d3 = require('d3');
 
 function drawChart(data, parentSelector, chartId){
+  data.sort( (a,b) => {
+    return a.date.getTime() > b.date.getTime()? 1: -1;
+  })
+
   const margin = {top: 20, right: 20, bottom: 30, left: 50},
       width = 960 - margin.left - margin.right,
       height = 500 - margin.top - margin.bottom;
@@ -16,20 +20,16 @@ function drawChart(data, parentSelector, chartId){
       .attr("transform",
             "translate(" + margin.left + "," + margin.top + ")");
 
-
-  console.log(data)
   x.domain(d3.extent(data, (d) => d.date));
-  y.domain([0, d3.max(data, (d) => {
-    const count = Object.values(d.counts).reduce((a,b) => a+b, 0);
-    return count;
-   })]);
+  y.domain([0, d3.max(data, (d) => totalCount(d))]);
 
  const valueLine = d3.line()
-     .x((d) => { return x(d.date); })
+     .x((d) => {
+       return x(d.date);
+     })
      .y((d) =>{
-       const count = Object.values(d.counts).reduce((a,b) => a+b, 0);
-       return y(count);
-     });
+       return y(totalCount(d))
+     })
 
   // Add the X Axis
   svg.append("g")
@@ -40,13 +40,16 @@ function drawChart(data, parentSelector, chartId){
   svg.append("g")
     .call(d3.axisLeft(y));
 
-
-    svg.append("path")
-      .data([data])
-      .attr("class", "line")
-      .attr("d", valueLine);
+  //Draw the line
+  svg.append("path")
+    .datum(data)
+    .attr("class", "line")
+    .attr("d", valueLine);
 }
 
+function totalCount(d){
+  return Object.values(d.counts).reduce((a,b) => a+b, 0);
+}
 module.exports = {
   drawChart: drawChart
 }

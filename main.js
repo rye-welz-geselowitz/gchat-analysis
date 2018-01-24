@@ -7,14 +7,26 @@ const sampleData = require('./js/sample-data');
 d3.select('#load-sample-data-btn')
   .on('click', () => {
     d3.select("#chats-input")
-    .property('value', sampleData.small.text);
+    .property('value', sampleData.month.text);
     d3.select("#your-name-input")
-    .property('value', sampleData.small.name1);
+    .property('value', sampleData.month.name1);
     d3.select("#their-name-input")
-    .property('value', sampleData.small.name2);
+    .property('value', sampleData.month.name2);
     d3.select("#search-input")
-    .property('value', sampleData.small.searchValue);
+    .property('value', sampleData.month.searchValue);
   })
+
+  d3.select('#clear-btn')
+    .on('click', () => {
+      d3.select("#chats-input")
+      .property('value', '');
+      d3.select("#your-name-input")
+      .property('value', '');
+      d3.select("#their-name-input")
+      .property('value', '');
+      d3.select("#search-input")
+      .property('value', '');
+    })
 
 d3.select("#submit-btn")
   .on('click', ()=> {
