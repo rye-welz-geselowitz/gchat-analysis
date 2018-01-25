@@ -55,18 +55,25 @@ d3.select("#submit-btn")
     })
 
     d3.select("#total-checkbox")
+      .property('checked',true)
       .on('click', () => {
         toggleLine('total-line', totalCounts, totalCounts);
       })
 
+
+
     d3.select("#me-checkbox")
+      .property('checked',false)
       .on('click', () => {
         toggleLine('me-line', meData, totalCounts);
       })
+
     d3.select("#them-checkbox")
+      .property('checked',false)
       .on('click', () => {
         toggleLine('them-line', themData, totalCounts);
       })
+
     //TODO: form validation/ error handling
   })
 

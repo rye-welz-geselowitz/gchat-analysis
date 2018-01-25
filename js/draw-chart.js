@@ -64,7 +64,7 @@ function addLine(data, chartId, lineId, scaleData){
   const y = d3.scaleLinear().range([height, 0]);
   x.domain(d3.extent(scaleData, (d) => d.date));
   y.domain([0, d3.max(scaleData, (d) => d.count)]); //TODO: extract this
-  console.log(scaleData)
+
   const valueLine = d3.line()
       .x((d) => x(d.date))
       .y((d) => y(d.count))
