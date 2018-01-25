@@ -1,4 +1,4 @@
-const enums = require('./enum.js');
+const scaleEnum = require('./scale.js');
 
 function determineScale(data){
   const times1 = data.map( (d) => { d.date.getTime()});
@@ -6,15 +6,15 @@ function determineScale(data){
   const diffMs = Math.max(...times) - Math.min(...times);
   const diffDays = msToDays(diffMs);
   if(diffDays < 60){
-    return enums.Scale.day;
+    return scaleEnum.Scale.day;
   }
   if(diffDays < 150){
-    return enums.Scale.week;
+    return scaleEnum.Scale.week;
   }
   if(diffDays < 900){
-    return enums.Scale.month;
+    return scaleEnum.Scale.month;
   }
-  return enums.Scale.year;
+  return scaleEnum.Scale.year;
 }
 
 function msToDays(ms){
@@ -28,16 +28,16 @@ function getWordFrequency(data, scale, searchValue){
       const date = new Date(d.date);
       const time = date.getTime();
       let key;
-      if(scale == enums.Scale.day){
+      if(scale == scaleEnum.Scale.day){
         key = new Date(date.getFullYear(), date.getMonth(), date.getDay())
       }
-      else if(scale == enums.Scale.week){
+      else if(scale == scaleEnum.Scale.week){
         key = new Date(date.getFullYear(), date.getMonth(), date.getDay()) //TODO: rethink
       }
-      else if(scale == enums.Scale.month){
+      else if(scale == scaleEnum.Scale.month){
         key = new Date(date.getFullYear(), date.getMonth(), 1)
       }
-      else if(scale == enums.Scale.year){
+      else if(scale == scaleEnum.Scale.year){
         key = new Date(date.getFullYear(), 0, 1) //TODO: rethink
       }
       if(!acc[key]){

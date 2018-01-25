@@ -36,6 +36,12 @@ button{
   font-size: 11px;
 }
 
+#scale-span{
+  text-transform: uppercase;
+  color: gray;
+  font-size: 11px;
+}
+
 #total-label{
   color: steelblue;
 }

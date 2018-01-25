@@ -3,6 +3,7 @@ const textProcessing = require('./js/text-processing');
 const dataProcessing = require('./js/data-processing');
 const draw = require('./js/draw-chart');
 const sampleData = require('./js/sample-data');
+const scaleEnum = require('./js/scale')
 
 d3.select('#load-sample-data-btn')
   .on('click', () => {
@@ -46,6 +47,7 @@ d3.select("#submit-btn")
     draw.drawChart(totalCounts, "#chart-container", chartId);
     setActiveView("chart-view");
     d3.select("#word-span").text(()=> searchValue )
+    d3.select("#scale-span").text( ()=> scaleEnum.toLabel(scale) )
 
     const meData = freqData.map ( (d) => {
       return Object.assign({}, d, {count: d.counts[yourName]})
