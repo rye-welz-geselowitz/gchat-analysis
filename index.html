@@ -25,10 +25,21 @@
     </div>
 
     <div id ='chart-view' class='hidden'>
-    <button id ='back-btn'>Back</button>
+      <div id='chart-container'>
+      </div>
+      <div>
+        <div>Showing results for: <span id = 'word-span'></span></div>
+        <div>
+          <label id='total-label'>Total</label><input type='checkbox' checked id='total-checkbox'/>
+          <label id='me-label'>Me</label><input type='checkbox' id='me-checkbox'/>
+          <label id='them-label'>Them</label><input type='checkbox' id='them-checkbox'/>
+        </div>
+      </div>
+      <div>
+        <button id ='back-btn'>Back</button>
+      </div>
     </div>
 
-    <!-- <script src="main.js"></script> -->
     <script src="bundle.js"></script>
   </body>
 </html>

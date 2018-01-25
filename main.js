@@ -42,12 +42,48 @@ d3.select("#submit-btn")
       textProcessing.parse(chats, yourName, theirName);
     const scale = dataProcessing.determineScale(data);
     const freqData = dataProcessing.getWordFrequency(data, scale, searchValue)
-    draw.drawChart(freqData, "#chart-view", chartId);
+    const totalCounts = freqData.map( (d) => Object.assign({}, d, {count: totalCount(d)}))
+    draw.drawChart(totalCounts, "#chart-container", chartId);
     setActiveView("chart-view");
+    d3.select("#word-span").text(()=> searchValue )
 
+    const meData = freqData.map ( (d) => {
+      return Object.assign({}, d, {count: d.counts[yourName]})
+    })
+    const themData = freqData.map ( (d) => {
+      return Object.assign({}, d, {count: d.counts[theirName]})
+    })
+
+    d3.select("#total-checkbox")
+      .on('click', () => {
+        toggleLine('total-line', totalCounts, totalCounts);
+      })
+
+    d3.select("#me-checkbox")
+      .on('click', () => {
+        toggleLine('me-line', meData, totalCounts);
+      })
+    d3.select("#them-checkbox")
+      .on('click', () => {
+        toggleLine('them-line', themData, totalCounts);
+      })
     //TODO: form validation/ error handling
   })
 
+function toggleLine(lineId, data, scaleData){
+  const line = d3.selectAll('#'+lineId)
+  if(line.empty()){
+    draw.addLine(data, chartId, lineId, scaleData)
+  }
+  else{
+    line.remove();
+  }
+
+}
+
+function totalCount(d){
+  return Object.values(d.counts).reduce((a,b) => a+b, 0);
+}
 
 d3.select("#back-btn")
 .on('click', ()=>{

@@ -5,10 +5,10 @@ body{
 .hidden{
   display: none;
 }
-.line {
+#total-line {
   fill: none;
   stroke: steelblue;
-  stroke-width: 2px;
+  stroke-width: 3px;
 }
 
 textarea{
@@ -22,4 +22,40 @@ textarea{
 
 div{
   margin: 20px;
+}
+
+button{
+  padding: 5px;
+  background: transparent;
+  border: solid 1px gray;
+}
+
+#word-span{
+  text-transform: uppercase;
+  color: gray;
+  font-size: 11px;
+}
+
+#total-label{
+  color: steelblue;
+}
+
+#me-line{
+  fill: none;
+  stroke: pink;
+  stroke-width: 2px;
+}
+
+#me-label{
+  color: pink;
+}
+
+#them-line{
+  fill: none;
+  stroke: purple;
+  stroke-width: 2px;
+}
+
+#them-label{
+  color: purple;
 }

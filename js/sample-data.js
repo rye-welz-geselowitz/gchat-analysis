@@ -45,6 +45,16 @@ module.exports = {
     Where are you?
     Anna Chen
     I just miss you.
+    Saturday, June 5, 2017 2:39 PM
+    Fatima Mohammad
+    I don't why know but I still really miss you.
+    Anna Chen
+    I mean, seriously, what makes you miss me?
+    Fatima Mohammad
+    I don't know
+    I guess sometimes
+    I just think about you?
+    Is that weird?
     Saturday, July 2, 2017 2:39 PM
     Fatima Mohammad
     I really miss you! I miss you so much!
@@ -60,6 +70,6 @@ module.exports = {
     `,
     name1: 'Fatima Mohammad',
     name2: 'Anna Chen',
-    searchValue: 'miss'
+    searchValue: 'I miss you'
   }
 }

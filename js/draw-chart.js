@@ -21,15 +21,12 @@ function drawChart(data, parentSelector, chartId){
             "translate(" + margin.left + "," + margin.top + ")");
 
   x.domain(d3.extent(data, (d) => d.date));
-  y.domain([0, d3.max(data, (d) => totalCount(d))]);
+  y.domain([0, d3.max(data, (d) => d.count)]);
 
  const valueLine = d3.line()
-     .x((d) => {
-       return x(d.date);
-     })
-     .y((d) =>{
-       return y(totalCount(d))
-     })
+     .x((d) =>  {
+       return x(d.date)})
+     .y((d) => y(d.count))
 
   // Add the X Axis
   svg.append("g")
@@ -41,15 +38,55 @@ function drawChart(data, parentSelector, chartId){
     .call(d3.axisLeft(y));
 
   //Draw the line
-  svg.append("path")
+  const path = svg.append("path")
     .datum(data)
-    .attr("class", "line")
+    .attr("id", "total-line")
     .attr("d", valueLine);
+
+  const totalLength = path.node().getTotalLength();
+  path
+  .attr("stroke-dasharray", totalLength + " " + totalLength)
+  .attr("stroke-dashoffset", totalLength)
+  .transition()
+    .duration(4000)
+    .ease(d3.easeLinear)
+    .attr("stroke-dashoffset", 0)
 }
 
-function totalCount(d){
-  return Object.values(d.counts).reduce((a,b) => a+b, 0);
+function addLine(data, chartId, lineId, scaleData){
+  data.sort( (a,b) => {
+    return a.date.getTime() > b.date.getTime()? 1: -1;
+  })
+  const margin = {top: 20, right: 20, bottom: 30, left: 50},
+      width = 960 - margin.left - margin.right,
+      height = 500 - margin.top - margin.bottom;
+  const x = d3.scaleTime().range([0, width]);
+  const y = d3.scaleLinear().range([height, 0]);
+  x.domain(d3.extent(scaleData, (d) => d.date));
+  y.domain([0, d3.max(scaleData, (d) => d.count)]); //TODO: extract this
+  console.log(scaleData)
+  const valueLine = d3.line()
+      .x((d) => x(d.date))
+      .y((d) => y(d.count))
+
+  const svg = d3.select('#'+chartId).select('g');
+  const path = svg.append("path")
+    .datum(data)
+    .attr("id", lineId)
+    .attr("d", valueLine)
+
+  const totalLength = path.node().getTotalLength();
+  path
+  .attr("stroke-dasharray", totalLength + " " + totalLength)
+  .attr("stroke-dashoffset", totalLength)
+  .transition()
+    .duration(4000)
+    .ease(d3.easeLinear)
+    .attr("stroke-dashoffset", 0)
+
 }
+
 module.exports = {
-  drawChart: drawChart
+  drawChart: drawChart,
+  addLine: addLine
 }
