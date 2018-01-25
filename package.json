@@ -4,13 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "browserify main.js -o bundle.js -v",
+    "start": "browserify main.js -o bundle.js -v && http-server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "browserify": "^15.2.0",
-    "d3": "^4.12.2"
+    "d3": "^4.12.2",
+    "http-server": "^0.11.1"
   }
 }
