@@ -1,6 +1,7 @@
 const d3 = require('d3');
 
 function drawChart(data, parentSelector, chartId){
+
   data.sort( (a,b) => {
     return a.date.getTime() > b.date.getTime()? 1: -1;
   })
@@ -37,20 +38,29 @@ function drawChart(data, parentSelector, chartId){
   svg.append("g")
     .call(d3.axisLeft(y));
 
+  svg.selectAll("dot")
+     .data(data)
+   .enter().append("circle")
+     .attr("r", 3.5)
+     .attr("cx", function(d) { return x(d.date); })
+     .attr("cy", function(d) { return y(d.count); });
+
   //Draw the line
   const path = svg.append("path")
     .datum(data)
     .attr("id", "total-line")
     .attr("d", valueLine);
 
-  const totalLength = path.node().getTotalLength();
-  path
-  .attr("stroke-dasharray", totalLength + " " + totalLength)
-  .attr("stroke-dashoffset", totalLength)
-  .transition()
-    .duration(4000)
-    .ease(d3.easeLinear)
-    .attr("stroke-dashoffset", 0)
+  // const totalLength = path.node().getTotalLength();
+  // path
+  // .attr("stroke-dasharray", totalLength + " " + totalLength)
+  // .attr("stroke-dashoffset", totalLength)
+  // .transition()
+  //   .duration(4000)
+  //   .ease(d3.easeLinear)
+  //   .attr("stroke-dashoffset", 0)
+
+
 }
 
 function addLine(data, chartId, lineId, scaleData){
@@ -69,20 +79,30 @@ function addLine(data, chartId, lineId, scaleData){
       .x((d) => x(d.date))
       .y((d) => y(d.count))
 
+
   const svg = d3.select('#'+chartId).select('g');
+
+  svg.selectAll("dot")
+     .data(data)
+   .enter().append("circle")
+     .attr("r", 3.5)
+     .attr("cx", function(d) { return x(d.date); })
+     .attr("cy", function(d) { return y(d.count); });
+
+
   const path = svg.append("path")
     .datum(data)
     .attr("id", lineId)
     .attr("d", valueLine)
 
-  const totalLength = path.node().getTotalLength();
-  path
-  .attr("stroke-dasharray", totalLength + " " + totalLength)
-  .attr("stroke-dashoffset", totalLength)
-  .transition()
-    .duration(4000)
-    .ease(d3.easeLinear)
-    .attr("stroke-dashoffset", 0)
+  // const totalLength = path.node().getTotalLength();
+  // path
+  // .attr("stroke-dasharray", totalLength + " " + totalLength)
+  // .attr("stroke-dashoffset", totalLength)
+  // .transition()
+  //   .duration(4000)
+  //   .ease(d3.easeLinear)
+  //   .attr("stroke-dashoffset", 0)
 
 }
 
