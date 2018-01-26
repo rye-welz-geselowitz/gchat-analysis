@@ -40,20 +40,6 @@ function drawChart(data, parentSelector, chartId){
 
   addLine(data, chartId, "total-line", data)
 
-  // const lineGroup = svg.append("g").attr("id", "total-line-g")
-  //
-  // lineGroup.selectAll("dot")
-  //    .data(data)
-  //  .enter().append("circle")
-  //    .attr("r", 3.5)
-  //    .attr("cx", function(d) { return x(d.date); })
-  //    .attr("cy", function(d) { return y(d.count); });
-  //
-  // //Draw the line
-  // const path = lineGroup.append("path")
-  //   .datum(data)
-  //   .attr("d", valueLine);
-
 }
 
 function addLine(data, chartId, lineId, scaleData){

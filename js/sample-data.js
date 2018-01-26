@@ -32,14 +32,14 @@ module.exports = {
     Oh I miss you too.
     Saturday, April 2, 2017 2:39 PM
     Fatima Mohammad
-    I miss you so much!
+    Honestly, I miss you so much!
     Anna Chen
-    Oh I miss you too.
+    I mean... I guess I miss you too.
     Saturday, April 2, 2017 2:39 PM
     Fatima Mohammad
-    I miss you so much!
+    Ok, I don't know how many times I have to say this, but I miss you.
     Anna Chen
-    Oh I miss you too.
+    Stop saying it. You know I miss you too.
     Saturday, May 2, 2017 2:39 PM
     Fatima Mohammad
     Where are you?

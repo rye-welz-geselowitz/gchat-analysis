@@ -56,17 +56,24 @@ d3.select("#submit-btn")
     })
 
     freqData.forEach( (d,i) => {
-      console.log("#total-line-"+i)
       d3.select("#total-line-"+i)
       .on("click", ()=> {
-        console.log(data)
         const ids = Object.values(d.counts).reduce( (acc, obj) => {
           return acc.concat(obj.ids);
         }, [])
         const textMessages = ids.map( (id) => {
           return data.find( (d) => d.id == id)
         })
-        console.log(textMessages)
+        d3.select("#matches-content").remove();
+        d3.select("#matches")
+          .append("div")
+          .attr("id", "matches-content")
+          .selectAll("div")
+          .data(textMessages)
+          .enter()
+          .append("div")
+          .text( (d) => d.sender + ":" + d.text)
+
       })
     })
 
