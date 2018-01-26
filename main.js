@@ -39,8 +39,7 @@ d3.select("#submit-btn")
       d3.select("#their-name-input").node().value;
     const searchValue =
       d3.select("#search-input").node().value;
-    const data =
-      textProcessing.parse(chats, yourName, theirName);
+    const data = textProcessing.parse(chats, yourName, theirName);
     const scale = dataProcessing.determineScale(data);
     const freqData = dataProcessing.getWordFrequency(data, scale, searchValue)
     const totalCounts = freqData.map( (d) => Object.assign({}, d, {count: totalCount(d)}))
@@ -61,8 +60,6 @@ d3.select("#submit-btn")
       .on('click', () => {
         toggleLine('total-line', totalCounts, totalCounts);
       })
-
-
 
     d3.select("#me-checkbox")
       .property('checked',false)

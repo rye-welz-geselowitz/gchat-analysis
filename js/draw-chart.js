@@ -102,8 +102,6 @@ function addLine(data, chartId, lineId, scaleData){
         .duration(drawTime)
         .ease(d3.easeLinear)
         .attr("stroke-dashoffset", 0)
-
-
 }
 
 module.exports = {
