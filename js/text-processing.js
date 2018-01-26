@@ -28,7 +28,8 @@ function processByDateAndName(nameRe, match, textChunk, acc){
 function parse(chats, name1, name2){
   const nameRe = new RegExp(name1+"|"+name2, "g");
   const split = splitTextByKey(re.timeStamp, chats, processByDateAndName.bind(this, nameRe), []);
-  return split.sort( (a,b) => a.date > b.date? 1 : -1 )
+  split.sort( (a,b) => a.date > b.date? 1 : -1 )
+  return split.map((d, i) => Object.assign({}, d, {id: i}))
 }
 
 module.exports = {

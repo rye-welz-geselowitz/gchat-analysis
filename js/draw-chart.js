@@ -83,6 +83,7 @@ function addLine(data, chartId, lineId, scaleData){
      .attr("r", 5)
      .attr("cx", function(d) { return x(d.date); })
      .attr("cy", function(d) { return y(d.count); })
+     .attr("id", (d,i) => lineId+'-'+i) //TODO: continue mapping this to onclick display texts
      .style('opacity', 0)
      .transition()
      .duration(drawTime)

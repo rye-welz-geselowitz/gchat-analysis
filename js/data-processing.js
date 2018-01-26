@@ -44,13 +44,17 @@ function getWordFrequency(data, scale, searchValue){
         acc[key]= {};
       }
       if(!acc[key][d.sender]){
-        acc[key][d.sender]=0;
+        acc[key][d.sender]={
+          count: 0,
+          ids: []
+        };
       }
-      acc[key][d.sender]+=(countMatches(re, d.text));
+      acc[key][d.sender].count+=(countMatches(re, d.text));
+      acc[key][d.sender].ids.push(d.id)
       return acc;
     }, {})
   return Object.keys(dateToFrequency).reduce( (acc, key)=>{
-    acc.push({date: new Date(key), counts: dateToFrequency[key]})
+    acc.push({date: new Date(key), counts: dateToFrequency[key]}) //TODO: more descriptive key names?
     return acc;
   }, [])
 }

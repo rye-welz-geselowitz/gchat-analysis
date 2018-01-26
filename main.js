@@ -49,10 +49,10 @@ d3.select("#submit-btn")
     d3.select("#scale-span").text( ()=> scaleEnum.toLabel(scale) )
 
     const meData = freqData.map ( (d) => {
-      return Object.assign({}, d, {count: d.counts[yourName]})
+      return Object.assign({}, d, {count: d.counts[yourName].count})
     })
     const themData = freqData.map ( (d) => {
-      return Object.assign({}, d, {count: d.counts[theirName]})
+      return Object.assign({}, d, {count: d.counts[theirName].count})
     })
 
     d3.select("#total-checkbox")
@@ -88,7 +88,7 @@ function toggleLine(lineId, data, scaleData){
 }
 
 function totalCount(d){
-  return Object.values(d.counts).reduce((a,b) => a+b, 0);
+  return Object.values(d.counts).reduce((acc,b) => acc+b.count, 0);
 }
 
 d3.select("#back-btn")
