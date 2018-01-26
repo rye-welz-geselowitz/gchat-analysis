@@ -5,8 +5,6 @@ const draw = require('./js/draw-chart');
 const sampleData = require('./js/sample-data');
 const scaleEnum = require('./js/scale')
 
-console.log('hi!!!')
-
 d3.select('#load-sample-data-btn')
   .on('click', () => {
     d3.select("#chats-input")

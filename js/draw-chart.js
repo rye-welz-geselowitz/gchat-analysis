@@ -17,9 +17,9 @@ function drawChart(data, parentSelector, chartId){
       .attr("id", chartId)
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-      .attr("transform",
-            "translate(" + margin.left + "," + margin.top + ")");
+      .append("g")
+        .attr("transform",
+              "translate(" + margin.left + "," + margin.top + ")");
 
   x.domain(d3.extent(data, (d) => d.date));
   y.domain([0, d3.max(data, (d) => d.count)]);
@@ -38,32 +38,26 @@ function drawChart(data, parentSelector, chartId){
   svg.append("g")
     .call(d3.axisLeft(y));
 
-  svg.selectAll("dot")
-     .data(data)
-   .enter().append("circle")
-     .attr("r", 3.5)
-     .attr("cx", function(d) { return x(d.date); })
-     .attr("cy", function(d) { return y(d.count); });
+  addLine(data, chartId, "total-line", data)
 
-  //Draw the line
-  const path = svg.append("path")
-    .datum(data)
-    .attr("id", "total-line")
-    .attr("d", valueLine);
-
-  // const totalLength = path.node().getTotalLength();
-  // path
-  // .attr("stroke-dasharray", totalLength + " " + totalLength)
-  // .attr("stroke-dashoffset", totalLength)
-  // .transition()
-  //   .duration(4000)
-  //   .ease(d3.easeLinear)
-  //   .attr("stroke-dashoffset", 0)
-
+  // const lineGroup = svg.append("g").attr("id", "total-line-g")
+  //
+  // lineGroup.selectAll("dot")
+  //    .data(data)
+  //  .enter().append("circle")
+  //    .attr("r", 3.5)
+  //    .attr("cx", function(d) { return x(d.date); })
+  //    .attr("cy", function(d) { return y(d.count); });
+  //
+  // //Draw the line
+  // const path = lineGroup.append("path")
+  //   .datum(data)
+  //   .attr("d", valueLine);
 
 }
 
 function addLine(data, chartId, lineId, scaleData){
+  const drawTime = 3000;
   data.sort( (a,b) => {
     return a.date.getTime() > b.date.getTime()? 1: -1;
   })
@@ -81,28 +75,34 @@ function addLine(data, chartId, lineId, scaleData){
 
 
   const svg = d3.select('#'+chartId).select('g');
+  const lineGroup = svg.append("g").attr("id", lineId)
 
-  svg.selectAll("dot")
+  lineGroup.selectAll("dot")
      .data(data)
    .enter().append("circle")
-     .attr("r", 3.5)
+     .attr("r", 5)
      .attr("cx", function(d) { return x(d.date); })
-     .attr("cy", function(d) { return y(d.count); });
+     .attr("cy", function(d) { return y(d.count); })
+     .style('opacity', 0)
+     .transition()
+     .duration(drawTime)
+     .style('opacity', 1)
 
 
-  const path = svg.append("path")
+  const path = lineGroup.append("path")
     .datum(data)
     .attr("id", lineId)
     .attr("d", valueLine)
 
-  // const totalLength = path.node().getTotalLength();
-  // path
-  // .attr("stroke-dasharray", totalLength + " " + totalLength)
-  // .attr("stroke-dashoffset", totalLength)
-  // .transition()
-  //   .duration(4000)
-  //   .ease(d3.easeLinear)
-  //   .attr("stroke-dashoffset", 0)
+    const totalLength = path.node().getTotalLength();
+      path
+      .attr("stroke-dasharray", totalLength + " " + totalLength)
+      .attr("stroke-dashoffset", totalLength)
+      .transition()
+        .duration(drawTime)
+        .ease(d3.easeLinear)
+        .attr("stroke-dashoffset", 0)
+
 
 }
 
