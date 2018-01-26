@@ -76,13 +76,18 @@ function addLine(data, chartId, lineId, scaleData){
 
   const svg = d3.select('#'+chartId).select('g');
   const lineGroup = svg.append("g").attr("id", lineId)
+  const path = lineGroup.append("path")
+    .datum(data)
+    .attr("id", lineId)
+    .attr("d", valueLine)
 
   lineGroup.selectAll("dot")
      .data(data)
    .enter().append("circle")
-     .attr("r", 5)
+     .attr("r", 7)
      .attr("cx", function(d) { return x(d.date); })
      .attr("cy", function(d) { return y(d.count); })
+     .attr("fill", "white")
      .attr("id", (d,i) => lineId+'-'+i) //TODO: continue mapping this to onclick display texts
      .style('opacity', 0)
      .transition()
@@ -90,10 +95,7 @@ function addLine(data, chartId, lineId, scaleData){
      .style('opacity', 1)
 
 
-  const path = lineGroup.append("path")
-    .datum(data)
-    .attr("id", lineId)
-    .attr("d", valueLine)
+
 
     const totalLength = path.node().getTotalLength();
       path

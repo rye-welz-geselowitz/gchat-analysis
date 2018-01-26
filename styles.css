@@ -10,7 +10,9 @@ body{
   stroke: steelblue;
   stroke-width: 3px;
 }
-
+circle:hover{
+  fill:black;
+}
 textarea{
 	width: 80%;
 	height: 200px;

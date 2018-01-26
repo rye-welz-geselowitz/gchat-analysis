@@ -55,6 +55,21 @@ d3.select("#submit-btn")
       return Object.assign({}, d, {count: d.counts[theirName].count})
     })
 
+    freqData.forEach( (d,i) => {
+      console.log("#total-line-"+i)
+      d3.select("#total-line-"+i)
+      .on("click", ()=> {
+        console.log(data)
+        const ids = Object.values(d.counts).reduce( (acc, obj) => {
+          return acc.concat(obj.ids);
+        }, [])
+        const textMessages = ids.map( (id) => {
+          return data.find( (d) => d.id == id)
+        })
+        console.log(textMessages)
+      })
+    })
+
     d3.select("#total-checkbox")
       .property('checked',true)
       .on('click', () => {
