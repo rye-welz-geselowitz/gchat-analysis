@@ -1,9 +1,6 @@
+//TODO: description
 function splitTextByKey(re, str, process, acc){
-  var myArray;
-  const indices = [];
-  while ((myArray = re.exec(str)) !== null) {
-    indices.push({start: myArray.index, end: re.lastIndex})
-  }
+  const indices = compileMatchIndices(re, str);
   for(var i=0; i<indices.length;i++){
     const nextIndex = indices[i+1]? indices[i+1].start : str.length;
     const key = str.substring(indices[i].start, indices[i].end);
@@ -13,6 +10,17 @@ function splitTextByKey(re, str, process, acc){
   return acc;
 }
 
+//TODO: description
+function compileMatchIndices(re, str){
+  var myArray;
+  const indices = [];
+  while ((myArray = re.exec(str)) !== null) {
+    indices.push({start: myArray.index, end: re.lastIndex})
+  }
+  return indices;
+}
+
+//TODO: description
 function processByDateAndName(nameRe, match, textChunk, acc){
 	const date = new Date(match);
   const newTexts = splitTextByKey(nameRe, textChunk, (match, followingText, acc)=>{
@@ -22,10 +30,27 @@ function processByDateAndName(nameRe, match, textChunk, acc){
   return acc.concat(newTexts);
 }
 
+//TODO: description
+function isolateMatches(str, searchValue){
+  const re = new RegExp(searchValue, "gi");
+  const parsed = [];
+  const indices = compileMatchIndices(re, str);
+  if(!indices.length){
+    return [];
+  }
+  parsed.push(str.substring(0, indices[0].start))
+  for(var i=0; i<indices.length;i++){
+    const nextIndex = indices[i+1]? indices[i+1].start : str.length;
+    parsed.push(str.substring(indices[i].start, indices[i].end))
+    parsed.push(str.substring(indices[i].end, nextIndex))
+  }
+  return parsed;
+}
 
+
+//TODO: description
 function parse(chats, name1, name2){
-  const timeStamp =
-    /(January|February|March|April|May|June|July|August|September|October|November|December)\s\d*\,\s\d{4}/g
+  const timeStamp = /\w+,\s\w+\s\d{1,2},\s\d{4}\s\d{1,2}:\d{2}\s(?:AM|PM)/gi
   const nameRe = new RegExp(name1+"|"+name2, "g");
   const split = splitTextByKey(timeStamp, chats, processByDateAndName.bind(this, nameRe), []);
   split.sort( (a,b) => a.date > b.date? 1 : -1 )
@@ -33,5 +58,6 @@ function parse(chats, name1, name2){
 }
 
 module.exports = {
-  parse: parse
+  parse: parse,
+  isolateMatches: isolateMatches
 }

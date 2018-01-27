@@ -1,10 +1,9 @@
 TODO:
-* More accurate regex parsing
-* Highlight matches
-* Label axes
+* Active class for most recently clicked dot
 * Better sample data
-* Simple UX review
 * Refactor
+* Simple UX & styling review
+
 
 
 TODO WISHLIST:

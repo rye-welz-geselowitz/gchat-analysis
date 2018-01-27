@@ -67,12 +67,13 @@ d3.select("#submit-btn")
 
   })
 
-function toggleLine(lineId, data, scaleData, getIds, rawData, myName, theirName){
+function toggleLine(lineType, data, scaleData, getIds, rawData, myName, theirName, searchValue){
+  const lineId = lineTypeToId(lineType)
   const line = d3.selectAll('#'+lineId)
   if(line.empty()){
     draw.addLine(data, chartId, lineId, scaleData)
     data.forEach( (d,i) => {
-      setDisplayMatchesOnClick(d, i, lineId, rawData, getIds, myName, theirName)
+      setDisplayMatchesOnClick(d, i, lineType, rawData, getIds, myName, theirName, searchValue)
     })
   }
   else{
@@ -98,10 +99,9 @@ function renderDataDisplay(data, myName, theirName, searchValue){
   const scale = dataProcessing.determineScale(data);
   const freqData = dataProcessing.getWordFrequency(data, scale, searchValue)
   const totalCounts = freqData.map( (d) => Object.assign({}, d, {count: totalCount(d)}))
-  draw.drawChart(totalCounts, "#chart-container", chartId);
+  draw.drawChart(totalCounts, "#chart-container", chartId, scaleEnum.toLabel(scale));
   setActiveView("chart-view");
   d3.select("#word-span").text(()=> searchValue )
-  d3.select("#scale-span").text( ()=> scaleEnum.toLabel(scale) )
   d3.select("#matches")
     .append('div')
     .attr('id', "matches-content")
@@ -118,36 +118,39 @@ function renderDataDisplay(data, myName, theirName, searchValue){
       }, [])
     }
 
-  toggleLine('total-line', totalCounts, totalCounts, getIdsForTotalData, data, myName, theirName);
-  initiateCheckboxes(totalCounts,data,meData,themData,myName,theirName, getIdsForTotalData)
+  toggleLine(LineType.total, totalCounts, totalCounts, getIdsForTotalData, data, myName, theirName, searchValue);
+  initiateCheckboxes(totalCounts,data,meData,themData,myName,theirName, getIdsForTotalData, searchValue)
 
 }
 
-function initiateCheckboxes(totalCounts,data,meData,themData,myName,theirName, getIdsForTotalData){
+function initiateCheckboxes(totalCounts,data,meData,themData,myName,theirName, getIdsForTotalData, searchValue){
   d3.select("#total-checkbox")
     .property('checked',true)
     .on('click', () => {
-      toggleLine('total-line', totalCounts, totalCounts, getIdsForTotalData, data, myName, theirName);
+      toggleLine(LineType.total, totalCounts, totalCounts, getIdsForTotalData, data, myName, theirName, searchValue);
     })
 
   d3.select("#me-checkbox")
     .property('checked',false)
     .on('click', () => {
-      toggleLine('me-line', meData, totalCounts, (d) => d.counts[myName].ids, data, myName, theirName);
+      toggleLine(LineType.me, meData, totalCounts, (d) => d.counts[myName].ids, data, myName, theirName, searchValue);
     })
 
   d3.select("#them-checkbox")
     .property('checked',false)
     .on('click', () => {
-      toggleLine('them-line', themData, totalCounts, (d) => d.counts[theirName].ids, data, myName, theirName);
+      toggleLine(LineType.them, themData, totalCounts, (d) => d.counts[theirName].ids, data, myName, theirName, searchValue);
     })
 }
 
 
-function setDisplayMatchesOnClick(d, i, lineId, data, getIds, myName, theirName){
+function setDisplayMatchesOnClick(d, i, lineType, data, getIds, myName, theirName, searchValue){
+  const lineId = lineTypeToId(lineType)
   const ids = getIds(d)
   d3.select("#"+lineId+"-"+i)
   .on("click", ()=> {
+    d3.selectAll(".clicked").classed("clicked", false)
+    d3.select("#"+lineId+"-"+i).attr('class', 'clicked')
     const textMessages = ids.map( (id) => {
       return data.find( (d) => d.id == id)
     })
@@ -168,9 +171,19 @@ function setDisplayMatchesOnClick(d, i, lineId, data, getIds, myName, theirName)
       divs.append("p")
         .attr("class", "date")
         .text( (d) => d.date )
-      divs.append("p")
+
+      const textDiv = divs.append("p")
         .attr("class", "text")
-        .text( (d) => d.text )
+
+      textDiv.selectAll('span')
+        .data( (d) => {
+          return textProcessing.isolateMatches(d.text, searchValue)
+          })
+        .enter()
+        .append('span')
+        .text( (d) => d )
+        .classed("highlighted", (d) => d === searchValue)
+
     }
     else{
       newContent
@@ -180,6 +193,8 @@ function setDisplayMatchesOnClick(d, i, lineId, data, getIds, myName, theirName)
         .append("p")
         .text( () => "No matches")
     }
+
+
   })
 
 }
@@ -190,4 +205,23 @@ function setActiveView(activeId){
     d3.select("#"+id)
       .classed("hidden", activeId !== id);
   })
+}
+
+//TODO: move to enum file?
+const LineType = {
+  total: {},
+  me: {},
+  them: {}
+}
+
+function lineTypeToId(lineType){
+  if(lineType === LineType.total){
+    return "total-line";
+  }
+  if(lineType === LineType.me){
+    return "me-line"
+  }
+  if(lineType === LineType.them){
+    return "them-line"
+  }
 }

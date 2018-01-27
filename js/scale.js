@@ -7,7 +7,6 @@ const Scale = Object.freeze({
 
 function toLabel(scale) {
   if(scale === Scale.day){
-    console.log('yes')
     return "day";
   }
   if(scale === Scale.week){
