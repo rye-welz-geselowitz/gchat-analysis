@@ -5,7 +5,7 @@ const draw = require('./js/draw-chart');
 const sampleData = require('./js/sample-data');
 const scaleEnum = require('./js/enum/scale');
 const lineTypeEnum = require('./js/enum/line-type');
-console.log('???')
+
 const chartId = 'chart';
 
 //Welcome view buttons
@@ -77,8 +77,6 @@ d3.select("#back-btn")
   d3.select("#matches-content").remove();
   setActiveView("welcome-view");
 })
-
-
 
 
 //Helpers
