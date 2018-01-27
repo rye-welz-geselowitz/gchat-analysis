@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "browserify main.js -o bundle1.js -v && http-server",
+    "start": "browserify main.js -o bundle.js -v && http-server",
     "dev": "watchify main.js -o bundle.js -v && http-server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
