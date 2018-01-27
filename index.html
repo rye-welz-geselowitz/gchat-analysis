@@ -3,19 +3,22 @@
 <html>
   <head>
     <title>Gchat Analysis</title>
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <div id='welcome-view'>
       <div>
         <p>Paste your google chat history below.</p>
-        <textarea id ='chats-input'>
-        </textarea>
+        <textarea id ='chats-input'></textarea>
       </div>
       <div>
         <input id ='your-name-input' placeholder='Your name'/>
         <input id ='their-name-input' placeholder='Their name'/>
         <input id='search-input' placeholder="Word or phrase to track..."/>
+      </div>
+      <div id='error-msg' class='hidden'>
+        Oops! We couldn't parse your text.
       </div>
       <div>
         <button id='load-sample-data-btn'>Load Sample Data</button>
@@ -25,27 +28,31 @@
     </div>
 
     <div id ='chart-view' class='hidden'>
-      <div id='chart-container'>
-      </div>
-      <div>
-        <div>Showing results for: <span id = 'word-span'></span></div>
-        <div>Counts aggregated by: <span id = 'scale-span'></span></div>
-        <div>
-          <label id='total-label'>Total</label><input type='checkbox' id='total-checkbox'/>
-          <label id='me-label'>Me</label><input type='checkbox' id='me-checkbox'/>
-          <label id='them-label'>Them</label><input type='checkbox' id='them-checkbox'/>
-        </div>
-      </div>
-      <div>
-        <h3>Matches</h3>
-        <div id = 'matches'>
-          <div id='matches-content'>
-            Click a dot to see matches.
+      <div class='container'>
+        <div class='row'>
+          <div class="col">
+            <div id='chart-container'>
+            </div>
+            <div>Showing results for: <span id = 'word-span'></span></div>
+            <div>Counts aggregated by: <span id = 'scale-span'></span></div>
+            <div>
+              <label id='total-label'>Total</label><input type='checkbox' id='total-checkbox'/>
+              <label id='me-label'>Me</label><input type='checkbox' id='me-checkbox'/>
+              <label id='them-label'>Them</label><input type='checkbox' id='them-checkbox'/>
+            </div>
+            <div>
+                <button id ='back-btn'>New Search</button>
+            </div>
+          </div>
+          <div class="col">
+            <h3>Matches</h3>
+            <div id = 'matches' class="pre-scrollable">
+              <div id='matches-content'>
+                Click a dot to see matches.
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-      <div>
-        <button id ='back-btn'>Back</button>
       </div>
     </div>
 

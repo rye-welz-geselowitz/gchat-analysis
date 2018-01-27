@@ -32,6 +32,10 @@ button{
   border: solid 1px gray;
 }
 
+#matches{
+  height: 500px;
+}
+
 #word-span{
   text-transform: uppercase;
   color: gray;
@@ -68,21 +72,22 @@ button{
   color: purple;
 }
 
+#error-msg{
+  color: red;
+}
+
 .sender{
   text-decoration: uppercase;
   color: steelblue;
   font-size: 11px;
 }
 
-.date{ /*TODO: fix this css when div nesting is fixed*/
-  text-decoration: none;
+.date{
   color: gray;
   font-size: 11px;
 }
 .text{
-  text-decoration: none;
-  color: black;
-  font-size: 12px;
+
 }
 
 .error{

@@ -1,14 +1,14 @@
 const d3 = require('d3');
 
+const margin = {top: 20, right: 20, bottom: 30, left: 50},
+    width = 600 - margin.left - margin.right,
+    height = 300 - margin.top - margin.bottom;
+
 function drawChart(data, parentSelector, chartId){
 
   data.sort( (a,b) => {
     return a.date.getTime() > b.date.getTime()? 1: -1;
   })
-
-  const margin = {top: 20, right: 20, bottom: 30, left: 50},
-      width = 960 - margin.left - margin.right,
-      height = 500 - margin.top - margin.bottom;
 
   const x = d3.scaleTime().range([0, width]);
   const y = d3.scaleLinear().range([height, 0]);
@@ -24,11 +24,6 @@ function drawChart(data, parentSelector, chartId){
   x.domain(d3.extent(data, (d) => d.date));
   y.domain([0, d3.max(data, (d) => d.count)]);
 
- const valueLine = d3.line()
-     .x((d) =>  {
-       return x(d.date)})
-     .y((d) => y(d.count))
-
   // Add the X Axis
   svg.append("g")
     .attr("transform", "translate(0," + height + ")")
@@ -38,8 +33,6 @@ function drawChart(data, parentSelector, chartId){
   svg.append("g")
     .call(d3.axisLeft(y));
 
-  addLine(data, chartId, "total-line", data)
-
 }
 
 function addLine(data, chartId, lineId, scaleData){
@@ -47,9 +40,7 @@ function addLine(data, chartId, lineId, scaleData){
   data.sort( (a,b) => {
     return a.date.getTime() > b.date.getTime()? 1: -1;
   })
-  const margin = {top: 20, right: 20, bottom: 30, left: 50},
-      width = 960 - margin.left - margin.right,
-      height = 500 - margin.top - margin.bottom;
+
   const x = d3.scaleTime().range([0, width]);
   const y = d3.scaleLinear().range([height, 0]);
   x.domain(d3.extent(scaleData, (d) => d.date));
@@ -74,7 +65,7 @@ function addLine(data, chartId, lineId, scaleData){
      .attr("cx", function(d) { return x(d.date); })
      .attr("cy", function(d) { return y(d.count); })
      .attr("fill", "white")
-     .attr("id", (d,i) => lineId+'-'+i) //TODO: continue mapping this to onclick display texts
+     .attr("id", (d,i) => lineId+'-'+i)
      .style('opacity', 0)
      .transition()
      .duration(drawTime)

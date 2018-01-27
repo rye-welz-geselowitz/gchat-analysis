@@ -31,7 +31,8 @@ d3.select('#load-sample-data-btn')
 
 d3.select("#submit-btn")
   .on('click', ()=> {
-    d3.select(".error").classed("error", false)
+    d3.selectAll(".error").classed("error", false)
+    d3.select("#error-msg").classed("hidden", true)
     const chats =
       d3.select("#chats-input").node().value;
     const yourName =
@@ -45,7 +46,7 @@ d3.select("#submit-btn")
       renderDataDisplay(data, yourName, theirName, searchValue)
     }
     else if (chats && yourName && theirName && searchValue){
-      console.log('Could not parse data') //TODO: display validation message
+      d3.select("#error-msg").classed("hidden", false)
     }
     else{
       if(!chats){
@@ -64,10 +65,13 @@ d3.select("#submit-btn")
 
   })
 
-function toggleLine(lineId, data, scaleData){
+function toggleLine(lineId, data, scaleData, getIds, rawData){
   const line = d3.selectAll('#'+lineId)
   if(line.empty()){
     draw.addLine(data, chartId, lineId, scaleData)
+    data.forEach( (d,i) => {
+      setDisplayMatchesOnClick(d, i, lineId, rawData, getIds)
+    })
   }
   else{
     line.remove();
@@ -103,68 +107,71 @@ function renderDataDisplay(data, yourName, theirName, searchValue){
     return Object.assign({}, d, {count: d.counts[theirName].count})
   })
 
-  freqData.forEach( (d,i) => {
-    d3.select("#total-line-"+i)
-    .on("click", ()=> {
-      const ids = Object.values(d.counts).reduce( (acc, obj) => {
+  const getIdsForTotalData = (d) => {
+    return Object.values(d.counts).reduce( (acc, obj) => {
         return acc.concat(obj.ids);
       }, [])
-      const textMessages = ids.map( (id) => {
-        return data.find( (d) => d.id == id)
-      })
-      d3.select("#matches-content").remove();
+    }
 
-      const newContent = d3.select("#matches")
-        .append("div")
-        .attr("id", "matches-content")
-
-      if(textMessages.length){
-        newContent.selectAll("div")
-          .data(textMessages)
-          .enter()
-          .append("div") //TODO: how to do without nesting???
-          .attr("class", "sender")
-          .text( (d) => d.sender )
-          .append("div")
-          .attr("class", "date")
-          .text( (d) => d.date ) //TODO: format
-          .append("div")
-          .attr("class", "text")
-          .text( (d) => d.text )
-      }
-      else{
-        newContent
-          .selectAll('p')
-          .data([1])
-          .enter()
-          .append("p")
-          .text( () => "No matches")
-      }
-    })
-  })
+  toggleLine('total-line', totalCounts, totalCounts, getIdsForTotalData, data);
 
   d3.select("#total-checkbox")
     .property('checked',true)
     .on('click', () => {
-      toggleLine('total-line', totalCounts, totalCounts);
+      toggleLine('total-line', totalCounts, totalCounts, getIdsForTotalData, data);
     })
 
   d3.select("#me-checkbox")
     .property('checked',false)
     .on('click', () => {
-      toggleLine('me-line', meData, totalCounts);
+      toggleLine('me-line', meData, totalCounts, (d) => d.counts[yourName].ids, data);
     })
 
   d3.select("#them-checkbox")
     .property('checked',false)
     .on('click', () => {
-      toggleLine('them-line', themData, totalCounts);
+      toggleLine('them-line', themData, totalCounts, (d) => d.counts[theirName].ids, data);
     })
-
-  //TODO: form validation/ error handling
 }
 
 
+function setDisplayMatchesOnClick(d, i, lineId, data, getIds){
+  const ids = getIds(d)
+  d3.select("#"+lineId+"-"+i)
+  .on("click", ()=> {
+    const textMessages = ids.map( (id) => {
+      return data.find( (d) => d.id == id)
+    })
+    textMessages.sort( (a,b) => new Date(a.date) < new Date(b.date)? 1 : -1 )
+    d3.select("#matches-content").remove();
+
+    const newContent = d3.select("#matches")
+      .append("div")
+      .attr("id", "matches-content")
+
+    if(textMessages.length){
+      var divs = newContent.selectAll('p').data(data).enter().append('div');
+      divs.append("p")
+        .attr("class", "sender")
+        .text( (d) => d.sender )
+      divs.append("p")
+        .attr("class", "date")
+        .text( (d) => d.date ) //TODO: format
+      divs.append("p")
+        .attr("class", "text")
+        .text( (d) => d.text )
+    }
+    else{
+      newContent
+        .selectAll('p')
+        .data([1])
+        .enter()
+        .append("p")
+        .text( () => "No matches")
+    }
+  })
+
+}
 //HELPERS
 function setActiveView(activeId){
   const viewIds = ["welcome-view", "chart-view"];

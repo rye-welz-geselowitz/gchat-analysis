@@ -1,5 +1,3 @@
-const re = require('./regular-expression.js');
-
 function splitTextByKey(re, str, process, acc){
   var myArray;
   const indices = [];
@@ -26,8 +24,10 @@ function processByDateAndName(nameRe, match, textChunk, acc){
 
 
 function parse(chats, name1, name2){
+  const timeStamp =
+    /(January|February|March|April|May|June|July|August|September|October|November|December)\s\d*\,\s\d{4}/g
   const nameRe = new RegExp(name1+"|"+name2, "g");
-  const split = splitTextByKey(re.timeStamp, chats, processByDateAndName.bind(this, nameRe), []);
+  const split = splitTextByKey(timeStamp, chats, processByDateAndName.bind(this, nameRe), []);
   split.sort( (a,b) => a.date > b.date? 1 : -1 )
   return split.map((d, i) => Object.assign({}, d, {id: i}))
 }
