@@ -2,18 +2,19 @@
 <!doctype html>
 <html>
   <head>
-    <title>Gchat Analysis</title>
+    <title>Google Chat Analysis</title>
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <div id='welcome-view'>
+      <h1>Google Chat Analysis</h1>
       <div>
-        <p>Paste your google chat history below.</p>
+        <p>Paste your Google Chat history below.</p>
         <textarea id ='chats-input'></textarea>
       </div>
       <div>
-        <input id ='your-name-input' placeholder='Your name'/>
+        <input id ='my-name-input' placeholder='Your name'/>
         <input id ='their-name-input' placeholder='Their name'/>
         <input id='search-input' placeholder="Word or phrase to track..."/>
       </div>
@@ -47,9 +48,6 @@
           <div class="col">
             <h3>Matches</h3>
             <div id = 'matches' class="pre-scrollable">
-              <div id='matches-content'>
-                Click a dot to see matches.
-              </div>
             </div>
           </div>
         </div>

@@ -5,11 +5,14 @@ const draw = require('./js/draw-chart');
 const sampleData = require('./js/sample-data');
 const scaleEnum = require('./js/scale')
 
+
+const chartId = 'chart';
+
 d3.select('#load-sample-data-btn')
   .on('click', () => {
     d3.select("#chats-input")
     .property('value', sampleData.month.text);
-    d3.select("#your-name-input")
+    d3.select("#my-name-input")
     .property('value', sampleData.month.name1);
     d3.select("#their-name-input")
     .property('value', sampleData.month.name2);
@@ -17,17 +20,17 @@ d3.select('#load-sample-data-btn')
     .property('value', sampleData.month.searchValue);
   })
 
-  d3.select('#clear-btn')
-    .on('click', () => {
-      d3.select("#chats-input")
-      .property('value', '');
-      d3.select("#your-name-input")
-      .property('value', '');
-      d3.select("#their-name-input")
-      .property('value', '');
-      d3.select("#search-input")
-      .property('value', '');
-    })
+d3.select('#clear-btn')
+  .on('click', () => {
+    d3.select("#chats-input")
+    .property('value', '');
+    d3.select("#my-name-input")
+    .property('value', '');
+    d3.select("#their-name-input")
+    .property('value', '');
+    d3.select("#search-input")
+    .property('value', '');
+  })
 
 d3.select("#submit-btn")
   .on('click', ()=> {
@@ -35,25 +38,25 @@ d3.select("#submit-btn")
     d3.select("#error-msg").classed("hidden", true)
     const chats =
       d3.select("#chats-input").node().value;
-    const yourName =
-      d3.select("#your-name-input").node().value;
+    const myName =
+      d3.select("#my-name-input").node().value;
     const theirName =
       d3.select("#their-name-input").node().value;
     const searchValue =
       d3.select("#search-input").node().value;
-    const data = textProcessing.parse(chats, yourName, theirName);
-    if(chats && yourName && theirName && searchValue && data.length){
-      renderDataDisplay(data, yourName, theirName, searchValue)
+    const data = textProcessing.parse(chats, myName, theirName);
+    if(chats && myName && theirName && searchValue && data.length){
+      renderDataDisplay(data, myName, theirName, searchValue)
     }
-    else if (chats && yourName && theirName && searchValue){
+    else if (chats && myName && theirName && searchValue){
       d3.select("#error-msg").classed("hidden", false)
     }
     else{
       if(!chats){
         d3.select("#chats-input").attr('class', 'error')
       }
-      if(!yourName){
-        d3.select("#your-name-input").attr('class', 'error')
+      if(!myName){
+        d3.select("#my-name-input").attr('class', 'error')
       }
       if(!theirName){
         d3.select("#their-name-input").attr('class', 'error')
@@ -92,7 +95,7 @@ d3.select("#back-btn")
 })
 
 
-function renderDataDisplay(data, yourName, theirName, searchValue){
+function renderDataDisplay(data, myName, theirName, searchValue){
   const scale = dataProcessing.determineScale(data);
   const freqData = dataProcessing.getWordFrequency(data, scale, searchValue)
   const totalCounts = freqData.map( (d) => Object.assign({}, d, {count: totalCount(d)}))
@@ -100,13 +103,16 @@ function renderDataDisplay(data, yourName, theirName, searchValue){
   setActiveView("chart-view");
   d3.select("#word-span").text(()=> searchValue )
   d3.select("#scale-span").text( ()=> scaleEnum.toLabel(scale) )
+  d3.select("#matches")
+    .append('div')
+    .attr('id', "matches-content")
+    .text( () => "Click a dot to see matches.")
   const meData = freqData.map ( (d) => {
-    return Object.assign({}, d, {count: d.counts[yourName].count})
+    return Object.assign({}, d, {count: d.counts[myName].count})
   })
   const themData = freqData.map ( (d) => {
     return Object.assign({}, d, {count: d.counts[theirName].count})
   })
-
   const getIdsForTotalData = (d) => {
     return Object.values(d.counts).reduce( (acc, obj) => {
         return acc.concat(obj.ids);
@@ -114,7 +120,11 @@ function renderDataDisplay(data, yourName, theirName, searchValue){
     }
 
   toggleLine('total-line', totalCounts, totalCounts, getIdsForTotalData, data);
+  initiateCheckboxes(totalCounts,data,meData,themData,myName,theirName, getIdsForTotalData)
 
+}
+
+function initiateCheckboxes(totalCounts,data,meData,themData,myName,theirName, getIdsForTotalData){
   d3.select("#total-checkbox")
     .property('checked',true)
     .on('click', () => {
@@ -124,7 +134,7 @@ function renderDataDisplay(data, yourName, theirName, searchValue){
   d3.select("#me-checkbox")
     .property('checked',false)
     .on('click', () => {
-      toggleLine('me-line', meData, totalCounts, (d) => d.counts[yourName].ids, data);
+      toggleLine('me-line', meData, totalCounts, (d) => d.counts[myName].ids, data);
     })
 
   d3.select("#them-checkbox")
@@ -136,10 +146,7 @@ function renderDataDisplay(data, yourName, theirName, searchValue){
 
 
 function setDisplayMatchesOnClick(d, i, lineId, data, getIds){
-  console.log('---')
-  console.log(d)
   const ids = getIds(d)
-  console.log(ids)
   d3.select("#"+lineId+"-"+i)
   .on("click", ()=> {
     const textMessages = ids.map( (id) => {
@@ -175,7 +182,7 @@ function setDisplayMatchesOnClick(d, i, lineId, data, getIds){
   })
 
 }
-//HELPERS
+
 function setActiveView(activeId){
   const viewIds = ["welcome-view", "chart-view"];
   viewIds.forEach( (id) =>{
@@ -183,5 +190,3 @@ function setActiveView(activeId){
       .classed("hidden", activeId !== id);
   })
 }
-
-const chartId = 'chart';
