@@ -31,6 +31,7 @@ d3.select('#load-sample-data-btn')
 
 d3.select("#submit-btn")
   .on('click', ()=> {
+    d3.select(".error").classed("error", false)
     const chats =
       d3.select("#chats-input").node().value;
     const yourName =
@@ -40,62 +41,27 @@ d3.select("#submit-btn")
     const searchValue =
       d3.select("#search-input").node().value;
     const data = textProcessing.parse(chats, yourName, theirName);
-    const scale = dataProcessing.determineScale(data);
-    const freqData = dataProcessing.getWordFrequency(data, scale, searchValue)
-    const totalCounts = freqData.map( (d) => Object.assign({}, d, {count: totalCount(d)}))
-    draw.drawChart(totalCounts, "#chart-container", chartId);
-    setActiveView("chart-view");
-    d3.select("#word-span").text(()=> searchValue )
-    d3.select("#scale-span").text( ()=> scaleEnum.toLabel(scale) )
+    if(chats && yourName && theirName && searchValue && data.length){
+      renderDataDisplay(data, yourName, theirName, searchValue)
+    }
+    else if (chats && yourName && theirName && searchValue){
+      console.log('Could not parse data') //TODO: display validation message
+    }
+    else{
+      if(!chats){
+        d3.select("#chats-input").attr('class', 'error')
+      }
+      if(!yourName){
+        d3.select("#your-name-input").attr('class', 'error')
+      }
+      if(!theirName){
+        d3.select("#their-name-input").attr('class', 'error')
+      }
+      if(!searchValue){
+        d3.select("#search-input").attr('class', 'error')
+      }
+    }
 
-    const meData = freqData.map ( (d) => {
-      return Object.assign({}, d, {count: d.counts[yourName].count})
-    })
-    const themData = freqData.map ( (d) => {
-      return Object.assign({}, d, {count: d.counts[theirName].count})
-    })
-
-    freqData.forEach( (d,i) => {
-      d3.select("#total-line-"+i)
-      .on("click", ()=> {
-        const ids = Object.values(d.counts).reduce( (acc, obj) => {
-          return acc.concat(obj.ids);
-        }, [])
-        const textMessages = ids.map( (id) => {
-          return data.find( (d) => d.id == id)
-        })
-        d3.select("#matches-content").remove();
-        d3.select("#matches")
-          .append("div")
-          .attr("id", "matches-content")
-          .selectAll("div")
-          .data(textMessages)
-          .enter()
-          .append("div")
-          .text( (d) => d.sender + ":" + d.text)
-
-      })
-    })
-
-    d3.select("#total-checkbox")
-      .property('checked',true)
-      .on('click', () => {
-        toggleLine('total-line', totalCounts, totalCounts);
-      })
-
-    d3.select("#me-checkbox")
-      .property('checked',false)
-      .on('click', () => {
-        toggleLine('me-line', meData, totalCounts);
-      })
-
-    d3.select("#them-checkbox")
-      .property('checked',false)
-      .on('click', () => {
-        toggleLine('them-line', themData, totalCounts);
-      })
-
-    //TODO: form validation/ error handling
   })
 
 function toggleLine(lineId, data, scaleData){
@@ -117,9 +83,86 @@ d3.select("#back-btn")
 .on('click', ()=>{
   d3.select("#"+chartId)
     .remove();
+  d3.select("#matches-content").remove();
   setActiveView("welcome-view");
 })
 
+
+function renderDataDisplay(data, yourName, theirName, searchValue){
+  const scale = dataProcessing.determineScale(data);
+  const freqData = dataProcessing.getWordFrequency(data, scale, searchValue)
+  const totalCounts = freqData.map( (d) => Object.assign({}, d, {count: totalCount(d)}))
+  draw.drawChart(totalCounts, "#chart-container", chartId);
+  setActiveView("chart-view");
+  d3.select("#word-span").text(()=> searchValue )
+  d3.select("#scale-span").text( ()=> scaleEnum.toLabel(scale) )
+  const meData = freqData.map ( (d) => {
+    return Object.assign({}, d, {count: d.counts[yourName].count})
+  })
+  const themData = freqData.map ( (d) => {
+    return Object.assign({}, d, {count: d.counts[theirName].count})
+  })
+
+  freqData.forEach( (d,i) => {
+    d3.select("#total-line-"+i)
+    .on("click", ()=> {
+      const ids = Object.values(d.counts).reduce( (acc, obj) => {
+        return acc.concat(obj.ids);
+      }, [])
+      const textMessages = ids.map( (id) => {
+        return data.find( (d) => d.id == id)
+      })
+      d3.select("#matches-content").remove();
+
+      const newContent = d3.select("#matches")
+        .append("div")
+        .attr("id", "matches-content")
+
+      if(textMessages.length){
+        newContent.selectAll("div")
+          .data(textMessages)
+          .enter()
+          .append("div") //TODO: how to do without nesting???
+          .attr("class", "sender")
+          .text( (d) => d.sender )
+          .append("div")
+          .attr("class", "date")
+          .text( (d) => d.date ) //TODO: format
+          .append("div")
+          .attr("class", "text")
+          .text( (d) => d.text )
+      }
+      else{
+        newContent
+          .selectAll('p')
+          .data([1])
+          .enter()
+          .append("p")
+          .text( () => "No matches")
+      }
+    })
+  })
+
+  d3.select("#total-checkbox")
+    .property('checked',true)
+    .on('click', () => {
+      toggleLine('total-line', totalCounts, totalCounts);
+    })
+
+  d3.select("#me-checkbox")
+    .property('checked',false)
+    .on('click', () => {
+      toggleLine('me-line', meData, totalCounts);
+    })
+
+  d3.select("#them-checkbox")
+    .property('checked',false)
+    .on('click', () => {
+      toggleLine('them-line', themData, totalCounts);
+    })
+
+  //TODO: form validation/ error handling
+}
 
 
 //HELPERS
