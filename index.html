@@ -8,23 +8,24 @@
   </head>
   <body>
     <div id='welcome-view'>
-      <h1>Google Chat Analysis</h1>
+      <h1>Google Chat Tracker</h1>
+      <h5>Track word/phrase frequency in your Google chat history.</h5>
       <div>
-        <p>Paste your Google Chat history below.</p>
+        <p><i>Paste your Google Chat history below.</i></p>
         <textarea id ='chats-input'></textarea>
       </div>
       <div>
         <input id ='my-name-input' placeholder='Your name'/>
         <input id ='their-name-input' placeholder='Their name'/>
-        <input id='search-input' placeholder="Word or phrase to track..."/>
+        <input id='search-input' placeholder="Phrase to track"/>
       </div>
       <div id='error-msg' class='hidden'>
         Oops! We couldn't parse your text.
       </div>
       <div>
-        <button id='load-sample-data-btn'>Load Sample Data</button>
-        <button id='clear-btn'>Clear</button>
-        <button id ='submit-btn'>Submit</button>
+        <button id='load-sample-data-btn' type="button" class="btn btn-secondary">Load Sample Data</button>
+        <button id='clear-btn' type="button" class="btn btn-warning">Clear</button>
+        <button id ='submit-btn' type="button" class="btn btn-primary">Submit</button>
       </div>
     </div>
 

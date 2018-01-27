@@ -30,11 +30,6 @@ div{
   margin: 20px;
 }
 
-button{
-  padding: 5px;
-  background: transparent;
-  border: solid 1px gray;
-}
 
 #matches{
   height: 500px;

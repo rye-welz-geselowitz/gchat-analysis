@@ -1,7 +1,9 @@
-const scaleEnum = require('./scale.js');
+const scaleEnum = require('./enum/scale.js');
 
+// EXPOSED
+//Given an array of items [{date: ""}] representing text messages,
+//determined the scale for the chart
 function determineScale(data){
-  const times1 = data.map( (d) => { d.date.getTime()});
   const times = data.map( (d) => d.date.getTime());
   const diffMs = Math.max(...times) - Math.min(...times);
   const diffDays = msToDays(diffMs);
@@ -17,10 +19,12 @@ function determineScale(data){
   return scaleEnum.Scale.year;
 }
 
-function msToDays(ms){
-  return ms / (1000*60*60*24);
-}
-
+//Given an array of  items representing text messages
+//[{date: "", text: "", sender: ""}],
+//a scale, and a search value,
+//aggregates frequencies of the search value by the scale. Returns an array
+//with items representing date and frequency
+// [{date: "", counts: {"": {count: 0, ids: []}}}]
 function getWordFrequency(data, scale, searchValue){
   const re = new RegExp(searchValue, "gi");
   const dateToFrequency =
@@ -62,6 +66,12 @@ function getWordFrequency(data, scale, searchValue){
   }, [])
 }
 
+//HELPERS
+function msToDays(ms){
+  return ms / (1000*60*60*24);
+}
+
+
 function countMatches(re, str){
   let myArray;
   let count = 0;
@@ -70,7 +80,6 @@ function countMatches(re, str){
   }
   return count;
 }
-
 
 module.exports = {
   getWordFrequency: getWordFrequency,
