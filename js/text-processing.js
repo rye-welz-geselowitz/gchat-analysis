@@ -1,4 +1,3 @@
-//TODO: description
 function splitTextByKey(re, str, process, acc){
   const indices = compileMatchIndices(re, str);
   for(var i=0; i<indices.length;i++){
@@ -10,7 +9,7 @@ function splitTextByKey(re, str, process, acc){
   return acc;
 }
 
-//TODO: description
+
 function compileMatchIndices(re, str){
   var myArray;
   const indices = [];
@@ -20,7 +19,7 @@ function compileMatchIndices(re, str){
   return indices;
 }
 
-//TODO: description
+
 function processByDateAndName(nameRe, match, textChunk, acc){
 	const date = new Date(match);
   const newTexts = splitTextByKey(nameRe, textChunk, (match, followingText, acc)=>{
@@ -30,7 +29,6 @@ function processByDateAndName(nameRe, match, textChunk, acc){
   return acc.concat(newTexts);
 }
 
-//TODO: description
 function isolateMatches(str, searchValue){
   const re = new RegExp(searchValue, "gi");
   const parsed = [];
@@ -48,7 +46,6 @@ function isolateMatches(str, searchValue){
 }
 
 
-//TODO: description
 function parse(chats, name1, name2){
   const timeStamp = /\w+,\s\w+\s\d{1,2},\s\d{4}\s\d{1,2}:\d{2}\s(?:AM|PM)/gi
   const nameRe = new RegExp(name1+"|"+name2, "g");

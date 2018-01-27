@@ -1,4 +1,5 @@
 const d3 = require('d3');
+const textProcessing = require('./text-processing');
 
 const margin = {top: 20, right: 20, bottom: 50, left: 50},
     width = 600 - margin.left - margin.right,
