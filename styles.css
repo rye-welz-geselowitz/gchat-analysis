@@ -78,16 +78,20 @@ button{
 
 .sender{
   text-decoration: uppercase;
-  color: steelblue;
   font-size: 11px;
+}
+
+.me{
+  color: pink;
+}
+
+.them{
+  color: purple;
 }
 
 .date{
   color: gray;
   font-size: 11px;
-}
-.text{
-
 }
 
 .error{

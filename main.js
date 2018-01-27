@@ -5,7 +5,6 @@ const draw = require('./js/draw-chart');
 const sampleData = require('./js/sample-data');
 const scaleEnum = require('./js/scale')
 
-
 const chartId = 'chart';
 
 d3.select('#load-sample-data-btn')
@@ -68,12 +67,12 @@ d3.select("#submit-btn")
 
   })
 
-function toggleLine(lineId, data, scaleData, getIds, rawData){
+function toggleLine(lineId, data, scaleData, getIds, rawData, myName, theirName){
   const line = d3.selectAll('#'+lineId)
   if(line.empty()){
     draw.addLine(data, chartId, lineId, scaleData)
     data.forEach( (d,i) => {
-      setDisplayMatchesOnClick(d, i, lineId, rawData, getIds)
+      setDisplayMatchesOnClick(d, i, lineId, rawData, getIds, myName, theirName)
     })
   }
   else{
@@ -119,7 +118,7 @@ function renderDataDisplay(data, myName, theirName, searchValue){
       }, [])
     }
 
-  toggleLine('total-line', totalCounts, totalCounts, getIdsForTotalData, data);
+  toggleLine('total-line', totalCounts, totalCounts, getIdsForTotalData, data, myName, theirName);
   initiateCheckboxes(totalCounts,data,meData,themData,myName,theirName, getIdsForTotalData)
 
 }
@@ -128,24 +127,24 @@ function initiateCheckboxes(totalCounts,data,meData,themData,myName,theirName, g
   d3.select("#total-checkbox")
     .property('checked',true)
     .on('click', () => {
-      toggleLine('total-line', totalCounts, totalCounts, getIdsForTotalData, data);
+      toggleLine('total-line', totalCounts, totalCounts, getIdsForTotalData, data, myName, theirName);
     })
 
   d3.select("#me-checkbox")
     .property('checked',false)
     .on('click', () => {
-      toggleLine('me-line', meData, totalCounts, (d) => d.counts[myName].ids, data);
+      toggleLine('me-line', meData, totalCounts, (d) => d.counts[myName].ids, data, myName, theirName);
     })
 
   d3.select("#them-checkbox")
     .property('checked',false)
     .on('click', () => {
-      toggleLine('them-line', themData, totalCounts, (d) => d.counts[theirName].ids, data);
+      toggleLine('them-line', themData, totalCounts, (d) => d.counts[theirName].ids, data, myName, theirName);
     })
 }
 
 
-function setDisplayMatchesOnClick(d, i, lineId, data, getIds){
+function setDisplayMatchesOnClick(d, i, lineId, data, getIds, myName, theirName){
   const ids = getIds(d)
   d3.select("#"+lineId+"-"+i)
   .on("click", ()=> {
@@ -163,6 +162,8 @@ function setDisplayMatchesOnClick(d, i, lineId, data, getIds){
       var divs = newContent.selectAll('p').data(textMessages).enter().append('div');
       divs.append("p")
         .attr("class", "sender")
+        .classed("me", (d) => d.sender == myName)
+        .classed("them", (d) => d.sender == theirName)
         .text( (d) => d.sender )
       divs.append("p")
         .attr("class", "date")

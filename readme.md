@@ -1,4 +1,11 @@
-npm install --global browserify
-npm install --global watchify
+TODO:
+* More accurate regex parsing
+* Highlight matches
+* Label axes
+* Better sample data
+* Simple UX review
+* Refactor
 
-watchify main.js -o bundle.js -v
+
+TODO WISHLIST:
+  * toggle show frequency vs. count
