@@ -136,7 +136,10 @@ function renderDataDisplay(data, yourName, theirName, searchValue){
 
 
 function setDisplayMatchesOnClick(d, i, lineId, data, getIds){
+  console.log('---')
+  console.log(d)
   const ids = getIds(d)
+  console.log(ids)
   d3.select("#"+lineId+"-"+i)
   .on("click", ()=> {
     const textMessages = ids.map( (id) => {
@@ -150,13 +153,13 @@ function setDisplayMatchesOnClick(d, i, lineId, data, getIds){
       .attr("id", "matches-content")
 
     if(textMessages.length){
-      var divs = newContent.selectAll('p').data(data).enter().append('div');
+      var divs = newContent.selectAll('p').data(textMessages).enter().append('div');
       divs.append("p")
         .attr("class", "sender")
         .text( (d) => d.sender )
       divs.append("p")
         .attr("class", "date")
-        .text( (d) => d.date ) //TODO: format
+        .text( (d) => d.date )
       divs.append("p")
         .attr("class", "text")
         .text( (d) => d.text )
