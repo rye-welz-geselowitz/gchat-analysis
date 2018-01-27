@@ -1,4 +1,5 @@
 const d3 = require('d3');
+const $ = require ('jquery')
 const textProcessing = require('./js/text-processing');
 const dataProcessing = require('./js/data-processing');
 const draw = require('./js/draw-chart');
@@ -8,75 +9,85 @@ const lineTypeEnum = require('./js/enum/line-type');
 
 const chartId = 'chart';
 
-//Welcome view buttons
-d3.select('#load-sample-data-btn')
-  .on('click', () => {
-    d3.select("#chats-input")
-    .property('value', sampleData.month.text);
-    d3.select("#my-name-input")
-    .property('value', sampleData.month.name1);
-    d3.select("#their-name-input")
-    .property('value', sampleData.month.name2);
-    d3.select("#search-input")
-    .property('value', sampleData.month.searchValue);
+$(document).ready(() =>{
+  //Welcome view buttons
+  d3.select('#load-sample-data-btn')
+    .on('click', () => {
+      d3.select("#chats-input")
+      .property('value', sampleData.month.text);
+      d3.select("#my-name-input")
+      .property('value', sampleData.month.name1);
+      d3.select("#their-name-input")
+      .property('value', sampleData.month.name2);
+      d3.select("#search-input")
+      .property('value', sampleData.month.searchValue);
+    })
+
+  d3.select('#clear-btn')
+    .on('click', () => {
+      d3.select("#chats-input")
+      .property('value', '');
+      d3.select("#my-name-input")
+      .property('value', '');
+      d3.select("#their-name-input")
+      .property('value', '');
+      d3.select("#search-input")
+      .property('value', '');
+    })
+
+  d3.select("#submit-btn")
+    .on('click', ()=> {
+      d3.selectAll(".error").classed("error", false)
+      d3.select("#error-msg").classed("hidden", true)
+      const chats =
+        d3.select("#chats-input").node().value;
+      const myName =
+        d3.select("#my-name-input").node().value;
+      const theirName =
+        d3.select("#their-name-input").node().value;
+      const searchValue =
+        d3.select("#search-input").node().value;
+      const data = textProcessing.parse(chats, myName, theirName);
+      if(chats && myName && theirName && searchValue && data.length){
+        renderDataDisplay(data, myName, theirName, searchValue)
+      }
+      else if (chats && myName && theirName && searchValue){
+        d3.select("#error-msg").classed("hidden", false)
+      }
+      else{
+        if(!chats){
+          d3.select("#chats-input").attr('class', 'error')
+        }
+        if(!myName){
+          d3.select("#my-name-input").attr('class', 'error')
+        }
+        if(!theirName){
+          d3.select("#their-name-input").attr('class', 'error')
+        }
+        if(!searchValue){
+          d3.select("#search-input").attr('class', 'error')
+        }
+      }
+
+    })
+
+  //Data view buttons
+  d3.select("#back-btn")
+  .on('click', ()=>{
+    d3.select("#"+chartId)
+      .remove();
+    d3.select("#matches-content").remove();
+    setActiveView("welcome-view");
   })
 
-d3.select('#clear-btn')
-  .on('click', () => {
-    d3.select("#chats-input")
-    .property('value', '');
-    d3.select("#my-name-input")
-    .property('value', '');
-    d3.select("#their-name-input")
-    .property('value', '');
-    d3.select("#search-input")
-    .property('value', '');
-  })
 
-d3.select("#submit-btn")
-  .on('click', ()=> {
-    d3.selectAll(".error").classed("error", false)
-    d3.select("#error-msg").classed("hidden", true)
-    const chats =
-      d3.select("#chats-input").node().value;
-    const myName =
-      d3.select("#my-name-input").node().value;
-    const theirName =
-      d3.select("#their-name-input").node().value;
-    const searchValue =
-      d3.select("#search-input").node().value;
-    const data = textProcessing.parse(chats, myName, theirName);
-    if(chats && myName && theirName && searchValue && data.length){
-      renderDataDisplay(data, myName, theirName, searchValue)
-    }
-    else if (chats && myName && theirName && searchValue){
-      d3.select("#error-msg").classed("hidden", false)
-    }
-    else{
-      if(!chats){
-        d3.select("#chats-input").attr('class', 'error')
-      }
-      if(!myName){
-        d3.select("#my-name-input").attr('class', 'error')
-      }
-      if(!theirName){
-        d3.select("#their-name-input").attr('class', 'error')
-      }
-      if(!searchValue){
-        d3.select("#search-input").attr('class', 'error')
-      }
-    }
+});
 
-  })
 
-//Data view buttons
-d3.select("#back-btn")
-.on('click', ()=>{
-  d3.select("#"+chartId)
-    .remove();
-  d3.select("#matches-content").remove();
-  setActiveView("welcome-view");
-})
+
+
+
+//Helpers
 
 function toggleLine(lineType, data, scaleData, getIds, rawData, myName, theirName, searchValue){
   const lineId = lineTypeEnum.toId(lineType)
@@ -88,9 +99,6 @@ function toggleLine(lineType, data, scaleData, getIds, rawData, myName, theirNam
     line.remove();
   }
 }
-
-
-//Helpers 
 function totalCount(d){
   return Object.values(d.counts).reduce((acc,b) => acc+b.count, 0);
 }
