@@ -1,8 +1,8 @@
 const Scale = Object.freeze({
-  day: 1,
-  week: 2,
-  month: 3,
-  year: 4
+  day: {},
+  week: {},
+  month: {},
+  year: {}
 })
 
 function toLabel(scale) {

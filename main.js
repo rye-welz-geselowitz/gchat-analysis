@@ -35,16 +35,13 @@ d3.select('#clear-btn')
 
 d3.select("#submit-btn")
   .on('click', ()=> {
-    d3.selectAll(".error").classed("error", false)
-    d3.select("#error-msg").classed("hidden", true)
-    const chats =
-      d3.select("#chats-input").node().value;
-    const myName =
-      d3.select("#my-name-input").node().value;
-    const theirName =
-      d3.select("#their-name-input").node().value;
-    const searchValue =
-      d3.select("#search-input").node().value;
+    clearErrors();
+    const [chats, myName, theirName, searchValue] =
+      [d3.select("#chats-input").node().value,
+      d3.select("#my-name-input").node().value,
+      d3.select("#their-name-input").node().value,
+      d3.select("#search-input").node().value];
+
     const data = textProcessing.parse(chats, myName, theirName);
     if(chats && myName && theirName && searchValue && data.length){
       renderDataDisplay(data, myName, theirName, searchValue)
@@ -53,20 +50,16 @@ d3.select("#submit-btn")
       d3.select("#error-msg").classed("hidden", false)
     }
     else{
-      if(!chats){
-        d3.select("#chats-input").attr('class', 'error')
-      }
-      if(!myName){
-        d3.select("#my-name-input").attr('class', 'error')
-      }
-      if(!theirName){
-        d3.select("#their-name-input").attr('class', 'error')
-      }
-      if(!searchValue){
-        d3.select("#search-input").attr('class', 'error')
-      }
+      const validations = [[chats, "chats-input"],
+        [myName, "my-name-input"],
+        [theirName, "their-name-input"],
+        [searchValue, "search-input"]];
+      validations.forEach( ([entity, domId]) => {
+        if(!entity){
+          showError(domId);
+        }
+      })
     }
-
   })
 
 //Data view buttons
@@ -80,12 +73,21 @@ d3.select("#back-btn")
 
 
 //Helpers
+
+//TODO: use
+function showError(id){
+  d3.select("#"+id).attr('class', 'error')
+}
+function clearErrors(){
+  d3.selectAll(".error").classed("error", false)
+  d3.select("#error-msg").classed("hidden", true)
+}
 function totalCount(d){
   return Object.values(d.counts).reduce((acc,b) => acc+b.count, 0);
 }
 
 function toggleLine(lineType, data, scaleData, getIds, rawData, myName, theirName, searchValue){
-  const lineId = lineTypeEnum.toId(lineType)
+  const lineId = lineTypeEnum.toString(lineType)+'-line';
   const line = d3.selectAll('#'+lineId)
   if(line.empty()){
     draw.addLine(data, chartId, lineId, scaleData, rawData, getIds, myName, theirName, searchValue)

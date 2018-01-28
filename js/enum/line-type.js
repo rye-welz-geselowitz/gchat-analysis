@@ -4,19 +4,19 @@ const LineType = {
   them: {}
 }
 
-function toId(lineType){
+function toString(lineType){
   if(lineType === LineType.total){
-    return "total-line";
+    return "total";
   }
   if(lineType === LineType.me){
-    return "me-line"
+    return "me"
   }
   if(lineType === LineType.them){
-    return "them-line"
+    return "them"
   }
 }
 
 module.exports = {
   LineType: LineType,
-  toId: toId
+  toString: toString
 }
