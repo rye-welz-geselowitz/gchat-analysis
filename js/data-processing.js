@@ -35,11 +35,11 @@ function getWordFrequency(data, scale, searchValue) {
       if (scale == scaleEnum.Scale.day) {
         key = new Date(date.getFullYear(), date.getMonth(), date.getDay())
       } else if (scale == scaleEnum.Scale.week) {
-        key = new Date(date.getFullYear(), date.getMonth(), date.getDay()) //TODO: rethink
+        key = new Date(date.getFullYear(), date.getMonth(), date.getDay())
       } else if (scale == scaleEnum.Scale.month) {
         key = new Date(date.getFullYear(), date.getMonth(), 1)
       } else if (scale == scaleEnum.Scale.year) {
-        key = new Date(date.getFullYear(), 0, 1) //TODO: rethink
+        key = new Date(date.getFullYear(), 0, 1)
       }
       if (!acc[key]) {
         acc[key] = {};
@@ -61,7 +61,7 @@ function getWordFrequency(data, scale, searchValue) {
     acc.push({
       date: new Date(key),
       counts: dateToFrequency[key]
-    }) //TODO: more descriptive key names?
+    }) 
     return acc;
   }, [])
 }

@@ -85,10 +85,6 @@ function addLine(config) {
     chartId,
     frequencies,
     textMessages,
-    getIds,
-    myName,
-    theirName,
-    searchValue,
     drawTime,
     scaleData
   } = config;
@@ -144,29 +140,30 @@ function addLine(config) {
 
   //Add onclick properties to data points
   frequencies.forEach((d, i) => {
-    setDisplayMatchesOnClick(d, i, id, textMessages, getIds, myName, theirName, searchValue)
+    setDisplayMatchesOnClick(d, i, config)
   })
 
 }
 
-function setDisplayMatchesOnClick(d, i, lineId, data, getIds, myName, theirName, searchValue) {
+function setDisplayMatchesOnClick(d, i, lineConfig) {
+  const { id, myName, theirName, searchValue, getIds, textMessages } = lineConfig;
   const ids = getIds(d)
-  d3.select("#" + lineId + "-" + i)
+  d3.select("#" + id + "-" + i)
     .on("click", () => {
       d3.selectAll(".clicked").classed("clicked", false)
-      d3.select("#" + lineId + "-" + i).attr('class', 'clicked')
-      const textMessages = ids.map((id) => {
-        return data.find((d) => d.id == id)
+      d3.select("#" + id + "-" + i).attr('class', 'clicked')
+      const filteredTextMessages = ids.map((id) => {
+        return textMessages.find((d) => d.id == id)
       })
-      textMessages.sort((a, b) => new Date(a.date) < new Date(b.date) ? 1 : -1)
+      filteredTextMessages.sort((a, b) => new Date(a.date) < new Date(b.date) ? 1 : -1)
       d3.select("#matches-content").remove();
 
       const newContent = d3.select("#matches")
         .append("div")
         .attr("id", "matches-content")
 
-      if (textMessages.length) {
-        var divs = newContent.selectAll('p').data(textMessages).enter().append('div');
+      if (filteredTextMessages.length) {
+        const divs = newContent.selectAll('p').data(filteredTextMessages).enter().append('div');
         divs.append("p")
           .attr("class", "sender")
           .classed("me", (d) => d.sender == myName)
@@ -189,12 +186,7 @@ function setDisplayMatchesOnClick(d, i, lineId, data, getIds, myName, theirName,
           .classed("highlighted", (d) => d === searchValue)
 
       } else {
-        newContent
-          .selectAll('p')
-          .data([1])
-          .enter()
-          .append("p")
-          .text(() => "No matches")
+        newContent.selectAll('p').data([1]).enter().append("p").text(() => "No matches")
       }
 
 
