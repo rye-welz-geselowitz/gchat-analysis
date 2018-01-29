@@ -4,15 +4,15 @@ const LineType = {
   them: {}
 }
 
-function toString(lineType){
-  if(lineType === LineType.total){
+function toString(lineType) {
+  if (lineType === LineType.total) {
     return "total";
   }
-  if(lineType === LineType.me){
-    return "me"
+  if (lineType === LineType.me) {
+    return "me";
   }
-  if(lineType === LineType.them){
-    return "them"
+  if (lineType === LineType.them) {
+    return "them";
   }
 }
 

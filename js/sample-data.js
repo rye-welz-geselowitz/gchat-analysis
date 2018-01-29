@@ -1,5 +1,5 @@
 const sampleText =
-`Friday, December 2, 2016 2:39 PM
+  `Friday, December 2, 2016 2:39 PM
 Fati M.
 Hi, how are you?
 Lee W.

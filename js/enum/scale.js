@@ -6,16 +6,16 @@ const Scale = Object.freeze({
 })
 
 function toLabel(scale) {
-  if(scale === Scale.day){
+  if (scale === Scale.day) {
     return "day";
   }
-  if(scale === Scale.week){
+  if (scale === Scale.week) {
     return "week"
   }
-  if(scale === Scale.month){
+  if (scale === Scale.month) {
     return "month"
   }
-  if(scale === Scale.year){
+  if (scale === Scale.year) {
     return "year"
   }
 }
