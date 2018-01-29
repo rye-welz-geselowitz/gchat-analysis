@@ -45,7 +45,14 @@ d3.select("#submit-btn")
     if (chats && myName && theirName && searchValue) {
       const data = textProcessing.parse(chats, myName, theirName);
       if (data.length) {
-        renderDataDisplay(data, myName, theirName, searchValue)
+        const scale = dataProcessing.determineScale(data);
+        const config = new dataProcessing.WordFrequencyConfig({
+          myName: myName,
+          theirName: theirName,
+          searchValue: searchValue,
+          scale: scale
+        })
+        renderDataDisplay(data, config)
       } else {
         d3.select("#error-msg").classed("hidden", false)
       }
@@ -99,9 +106,9 @@ function toggleLine(config) {
   }
 }
 
-function renderDataDisplay(data, myName, theirName, searchValue) {
-  const scale = dataProcessing.determineScale(data);
-  const freqData = dataProcessing.getWordFrequency(data, scale, searchValue)
+function renderDataDisplay(data, config) {
+  const { myName, theirName, searchValue, scale } = config;
+  const freqData = dataProcessing.getWordFrequency(data, config)
   const totalCounts = freqData.map((d) => Object.assign({}, d, {
     count: totalCount(d)
   }))
