@@ -7,7 +7,6 @@ const scaleEnum = require('./js/enum/scale');
 const lineTypeEnum = require('./js/enum/line-type');
 
 const chartId = 'chart';
-const drawTime = 3000;
 
 //Welcome view buttons
 d3.select('#load-sample-data-btn')
@@ -45,14 +44,7 @@ d3.select("#submit-btn")
     if (chats && myName && theirName && searchValue) {
       const data = textProcessing.parse(chats, myName, theirName);
       if (data.length) {
-        const scale = dataProcessing.determineScale(data);
-        const config = new dataProcessing.WordFrequencyConfig({
-          myName: myName,
-          theirName: theirName,
-          searchValue: searchValue,
-          scale: scale
-        })
-        renderDataDisplay(data, config)
+        renderDataDisplay(data, myName, theirName, searchValue)
       } else {
         d3.select("#error-msg").classed("hidden", false)
       }
@@ -106,27 +98,26 @@ function toggleLine(config) {
   }
 }
 
-function renderDataDisplay(data, config) {
-  const { myName, theirName, searchValue, scale } = config;
+function renderDataDisplay(data, myName, theirName, searchValue) {
+  const scale = dataProcessing.determineScale(data);
+  const config = new dataProcessing.WordFrequencyConfig({
+    myName: myName,
+    theirName: theirName,
+    scale: scale,
+    searchValue: searchValue
+  })
   const freqData = dataProcessing.getWordFrequency(data, config)
-  const totalCounts = freqData.map((d) => Object.assign({}, d, {
-    count: totalCount(d)
-  }))
-  draw.drawChart(totalCounts, "chart-container", chartId, scaleEnum.toLabel(scale));
+  draw.drawChart(freqData, "chart-container", chartId,
+    scaleEnum.toLabel(scale), lineTypeEnum.LineType.total);
   setActiveView("chart-view");
   d3.select("#word-span").text(() => searchValue)
   d3.select("#matches")
     .append('div')
     .attr('id', "matches-content")
     .text(() => "Click a dot to see matches.")
-  const meData = getFrequenciesBySender(totalCounts, myName);
-  const themData = getFrequenciesBySender(totalCounts, theirName);
-  const totalLineConfig =
-    getTotalLineConfig(totalCounts, data, myName, theirName, searchValue);
-  const meLineConfig =
-    getMeLineConfig(meData, totalCounts, data, myName, theirName, searchValue)
-  const themLineConfig =
-    getThemLineConfig(themData, totalCounts, data, myName, theirName, searchValue)
+  const totalLineConfig = getLineConfig(lineTypeEnum.LineType.total, freqData, data, searchValue);
+  const meLineConfig = getLineConfig(lineTypeEnum.LineType.me, freqData, data, searchValue);
+  const themLineConfig = getLineConfig(lineTypeEnum.LineType.them, freqData, data, searchValue);
   toggleLine(totalLineConfig);
   initiateCheckboxes(totalLineConfig, meLineConfig, themLineConfig)
 }
@@ -169,52 +160,14 @@ function setActiveView(activeId) {
   })
 }
 
-
-function getTotalLineConfig(frequencies, textMessages, myName, theirName, searchValue) {
+function getLineConfig(lineType, frequencies, textMessages, searchValue){
   return new draw.LineConfig({
-    id: lineTypeEnum.toString(lineTypeEnum.LineType.total) + '-line',
+    lineType: lineType,
     chartId: chartId,
-    frequencies: frequencies,
-    scaleData: frequencies,
     textMessages: textMessages,
-    getIds: (d) => {
-      return Object.values(d.counts).reduce((acc, obj) => {
-        return acc.concat(obj.ids);
-      }, [])
-    },
-    myName: myName,
-    theirName: theirName,
-    searchValue: searchValue,
-    drawTime: drawTime
-  })
-}
-
-function getMeLineConfig(frequencies, scaleData, textMessages, myName, theirName, searchValue) {
-  return new draw.LineConfig({
-    id: lineTypeEnum.toString(lineTypeEnum.LineType.me) + '-line',
-    chartId: chartId,
     frequencies: frequencies,
-    scaleData: scaleData,
-    textMessages: textMessages,
-    getIds: (d) => d.counts[myName].ids,
-    myName: myName,
-    theirName: theirName,
+    drawTime: 3000,
     searchValue: searchValue,
-    drawTime: drawTime
-  })
-}
-
-function getThemLineConfig(frequencies, scaleData, textMessages, myName, theirName, searchValue) {
-  return new draw.LineConfig({
-    id: lineTypeEnum.toString(lineTypeEnum.LineType.them) + '-line',
-    chartId: chartId,
-    frequencies: frequencies,
-    scaleData: scaleData,
-    textMessages: textMessages,
-    getIds: (d) => d.counts[theirName].ids,
-    myName: myName,
-    theirName: theirName,
-    searchValue: searchValue,
-    drawTime: drawTime
+    id: lineTypeEnum.toString(lineType) + '-line',
   })
 }

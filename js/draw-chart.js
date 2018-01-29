@@ -1,5 +1,7 @@
 const d3 = require('d3');
 const textProcessing = require('./text-processing');
+const lineTypeEnum = require('./enum/line-type.js');
+const ownerEnum = require('./enum/owner.js');
 
 const margin = {
     top: 20,
@@ -12,7 +14,7 @@ const margin = {
 
 
 
-function drawChart(data, parentId, chartId, scaleLabel) {
+function drawChart(data, parentId, chartId, scaleLabel, lineType) {
   //Sort data
   data.sort((a, b) => {
     return a.date.getTime() > b.date.getTime() ? 1 : -1;
@@ -21,7 +23,7 @@ function drawChart(data, parentId, chartId, scaleLabel) {
   const x = d3.scaleTime().range([0, width]);
   const y = d3.scaleLinear().range([height, 0]);
   x.domain(d3.extent(data, (d) => d.date));
-  y.domain([0, d3.max(data, (d) => d.count)]);
+  y.domain([0, d3.max(data, (d) => d.getCount(lineType))]);
 
   //Draw chart
   const svg = d3.select("#" + parentId).append("svg")
@@ -59,19 +61,15 @@ function drawChart(data, parentId, chartId, scaleLabel) {
 
 function LineConfig(config) {
   const {
-    id,
+    lineType,
     chartId,
-    frequencies,
     textMessages,
-    getIds,
-    myName,
-    theirName,
-    searchValue,
+    frequencies,
     drawTime,
-    scaleData
+    id,
+    searchValue
   } = config;
-  if (id && chartId && frequencies && textMessages && textMessages.length &&
-    getIds && myName && theirName && searchValue && drawTime && scaleData) {
+  if (lineType && chartId && textMessages && frequencies && drawTime && id && searchValue) {
     Object.assign(this, config)
   } else {
     throw "Invalid config"
@@ -81,12 +79,12 @@ function LineConfig(config) {
 
 function addLine(config) {
   const {
-    id,
+    lineType,
     chartId,
-    frequencies,
     textMessages,
+    frequencies,
     drawTime,
-    scaleData
+    id
   } = config;
 
   //Sort
@@ -96,13 +94,13 @@ function addLine(config) {
   //Set domain & range
   const x = d3.scaleTime().range([0, width]);
   const y = d3.scaleLinear().range([height, 0]);
-  x.domain(d3.extent(scaleData, (d) => d.date));
-  y.domain([0, d3.max(scaleData, (d) => d.count)]); //TODO: extract this
+  x.domain(d3.extent(frequencies, (d) => d.date));
+  y.domain([0, d3.max(frequencies, (d) => d.getCount(lineTypeEnum.LineType.total))]);
 
   //Draw line
   const valueLine = d3.line()
     .x((d) => x(d.date))
-    .y((d) => y(d.count))
+    .y((d) => y(d.getCount(lineType)))
 
   const svg = d3.select('#' + chartId).select('g');
   const lineGroup = svg.append("g").attr("id", id)
@@ -129,7 +127,7 @@ function addLine(config) {
       return x(d.date);
     })
     .attr("cy", function(d) {
-      return y(d.count);
+      return y(d.getCount(lineType));
     })
     .attr("fill", "white")
     .attr("id", (d, i) => id + '-' + i)
@@ -146,28 +144,28 @@ function addLine(config) {
 }
 
 function setDisplayMatchesOnClick(d, i, lineConfig) {
-  const { id, myName, theirName, searchValue, getIds, textMessages } = lineConfig;
-  const ids = getIds(d)
+  const {
+    lineType,
+    id,
+    searchValue
+  } = lineConfig;
+  const textMessages = d.getTextMessages(lineType);
   d3.select("#" + id + "-" + i)
     .on("click", () => {
       d3.selectAll(".clicked").classed("clicked", false)
       d3.select("#" + id + "-" + i).attr('class', 'clicked')
-      const filteredTextMessages = ids.map((id) => {
-        return textMessages.find((d) => d.id == id)
-      })
-      filteredTextMessages.sort((a, b) => new Date(a.date) < new Date(b.date) ? 1 : -1)
       d3.select("#matches-content").remove();
 
       const newContent = d3.select("#matches")
         .append("div")
         .attr("id", "matches-content")
 
-      if (filteredTextMessages.length) {
-        const divs = newContent.selectAll('p').data(filteredTextMessages).enter().append('div');
+      if (textMessages.length) {
+        const divs = newContent.selectAll('p').data(textMessages).enter().append('div');
         divs.append("p")
           .attr("class", "sender")
-          .classed("me", (d) => d.sender == myName)
-          .classed("them", (d) => d.sender == theirName)
+          .classed("me", (d) => d.owner === ownerEnum.Owner.me)
+          .classed("them", (d) => d.owner === ownerEnum.Owner.them)
           .text((d) => d.sender)
         divs.append("p")
           .attr("class", "date")
@@ -177,9 +175,7 @@ function setDisplayMatchesOnClick(d, i, lineConfig) {
           .attr("class", "text")
 
         textDiv.selectAll('span')
-          .data((d) => {
-            return textProcessing.isolateMatches(d.text, searchValue)
-          })
+          .data((d) => d.split)
           .enter()
           .append('span')
           .text((d) => d)
