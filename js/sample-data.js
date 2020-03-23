@@ -1,105 +1,25 @@
 const sampleText =
-  `Friday, December 2, 2016 2:39 PM
-Fati M.
-Hi, how are you?
-Lee W.
-I'm great, hbu?
-
-Sunday, December 18, 2016 2:00 PM
-Lee W.
-You never answered :(
-Fati M.
-o oops
-
-Monday, January 18, 2017 5:00 PM
-Fati M.
-Even though we're moved in together, I kind of miss you...
-Lee W.
-Let's talk later?
-
-Thursday, January 19, 2017 6:00 PM
-Fati M.
-I love you...
-
-Sunday, February 19, 2017 6:00 PM
-Fati M.
-Hey.
-
-Monday, February 20, 2017 6:00 PM
-Fati M.
-Are you there?
-Are you getting these?
-
-Wednesday, February 22, 2017 6:00 PM
-Fati M.
-I wish you would answer. I miss you.
-Lee W.
-Ok... I mean, I miss you too. I'll call you, ok?
-
-
-Wednesday, March 22, 2017 6:00 PM
-Fati M.
-Sometimes I think about how much I miss you and, gosh, it makes me mad that you never talk about missing me.
-Lee W.
-Why should I miss you? We live in the same house.
-Fati M.
-That doesn't stop me from missing you when you're
-
-Sunday, April 2, 2017 2:39 PM
-Fati M.
-I miss you so much! God, I miss you.
-Lee W.
-Oh I miss you too.
-
-Monday, April 3, 2017 2:39 PM
-Fati M.
-Honestly, I miss you so much!
-Lee W.
-I mean... I guess I miss you too.
-
-Tuesday, April 4, 2017 2:39 PM
-Fati M.
-Ok, I don't know how many times I have to say this, but I miss you.
-Lee W.
-Stop saying it. You know I miss you too.
-
-Tuesday, May 2, 2017 2:39 PM
-Fati M.
-Where are you?
-Lee W.
-I just miss you.
-
-Monday, June 5, 2017 2:39 PM
-Fati M.
-I don't why know but I still really miss you.
-Lee W.
-I mean, seriously, what makes you miss me?
-Fati M.
-I don't know
-I guess sometimes
-I just think about you?
-Is that weird?
-
-Sunday, July 2, 2017 2:39 PM
-Fati M.
-I really miss you! I miss you so much!
-Lee W.
-Do you actually miss me?
-Fati M.
-Yes! Why don't you think I miss you? I miss you!
-
-Saturday, December 2, 2017 2:39 PM
-Fati M.
-Whatever.
-Lee W.
-Ok.
+  `12/2/16, 9:32 PM - Frog: Hi, how are you?
+12/2/16, 10:32 PM - Toad: I'm great, hbu?
+12/2/18, 10:32 PM - Toad: You never answered :(
+12/2/18, 11:44 PM - Frog: o oops
+12/3/18, 10:02 PM - Toad: Even though we're moved in together, I kind of miss you...
+12/3/18, 10:11 PM - Frog: Let's talk later?
+12/3/18, 10:20 PM - Frog: I love you...
+12/4/18, 10:20 PM - Frog: Hey.
+12/4/21, 10:20 PM - Frog: Hey. Are you there? Are you getting these?
+12/4/21, 11:20 PM - Frog: Seriously pls answer my texts
+12/4/21, 11:21 PM - Toad: I love you. Yeah I'm here.
+12/4/21, 11:22 PM - Frog: Ok good I love you too.
+12/4/21, 11:25 PM - Toad: Do you though?
+12/4/21, 11:26 PM - Frog: srsly toad!! I love you!
 `
 
 module.exports = {
   month: {
     text: sampleText,
-    name1: 'Fati M.',
-    name2: 'Lee W.',
-    searchValue: 'I miss you'
+    name1: 'Frog',
+    name2: 'Toad',
+    searchValue: 'I love you'
   }
 }

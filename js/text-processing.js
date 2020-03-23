@@ -1,14 +1,4 @@
-function splitTextByKey(re, str, process, acc) {
-  const indices = compileMatchIndices(re, str);
-  for (var i = 0; i < indices.length; i++) {
-    const nextIndex = indices[i + 1] ? indices[i + 1].start : str.length;
-    const key = str.substring(indices[i].start, indices[i].end);
-    const value = str.substring(indices[i].end, nextIndex)
-    acc = process(key, value, acc)
-  }
-  return acc;
-}
-
+const moment = require('moment');
 
 function compileMatchIndices(re, str) {
   var myArray;
@@ -20,20 +10,6 @@ function compileMatchIndices(re, str) {
     })
   }
   return indices;
-}
-
-
-function processByDateAndName(nameRe, match, textChunk, acc) {
-  const date = new Date(match);
-  const newTexts = splitTextByKey(nameRe, textChunk, (match, followingText, acc) => {
-    acc.push({
-      sender: match,
-      text: followingText,
-      date: date
-    })
-    return acc;
-  }, []);
-  return acc.concat(newTexts);
 }
 
 function isolateMatches(str, searchValue) {
@@ -53,14 +29,19 @@ function isolateMatches(str, searchValue) {
 }
 
 
-function parse(chats, name1, name2) {
-  const timeStamp = /\w+,\s\w+\s\d{1,2},\s\d{4}\s\d{1,2}:\d{2}\s(?:AM|PM)/gi
-  const nameRe = new RegExp(name1 + "|" + name2, "g");
-  const split = splitTextByKey(timeStamp, chats, processByDateAndName.bind(this, nameRe), []);
-  split.sort((a, b) => a.date > b.date ? 1 : -1)
-  return split.map((d, i) => Object.assign({}, d, {
-    id: i
-  }))
+function parse(text, name1, name2){
+    const re = new RegExp('(?<date>\\d{1,2}\\/\\d{1,2}\\/\\d\\d\,\\s\\d{1,2})\:\\d{1,2}\\s(AM|PM)\\s\\-\\s' + '(?<sender>' + name1 + '|' + name2 + ')\:(?<text>.*)' , 'g')
+
+    const matches = [...text.matchAll(re)]
+    const x = matches.map((m)=>{
+        return {
+                sender: m.groups.sender,
+                text: m.groups.text,
+                date: moment(m.groups.date, "M/D/YY").toDate() //TODO: parse time!!!!
+        }
+    })
+    console.log(x)
+    return x;
 }
 
 module.exports = {
