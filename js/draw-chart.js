@@ -2,6 +2,7 @@ const d3 = require('d3');
 const textProcessing = require('./text-processing');
 const lineTypeEnum = require('./enum/line-type.js');
 const ownerEnum = require('./enum/owner.js');
+const moment = require('moment');
 
 const margin = {
     top: 20,
@@ -169,7 +170,7 @@ function setDisplayMatchesOnClick(d, i, lineConfig) {
           .text((d) => d.sender)
         divs.append("p")
           .attr("class", "date")
-          .text((d) => d.date)
+          .text((d) => moment(d.date).format('YYYY-MM-DD'))
 
         const textDiv = divs.append("p")
           .attr("class", "text")
