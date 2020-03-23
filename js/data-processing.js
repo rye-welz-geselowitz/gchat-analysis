@@ -43,12 +43,12 @@ function getWordFrequency(data, config) {
   } = config;
   const keyToDatumDict =
     data.reduce((keyToDatum, d) => {
-      const date = new Date(d.date);
+      const date = d.date;
       let key;
       if (scale == scaleEnum.Scale.day) { //TODO: extract to scale enum
-        key = new Date(date.getFullYear(), date.getMonth(), date.getDay())
+        key = new Date(date.getFullYear(), date.getMonth(), date.getDate())
       } else if (scale == scaleEnum.Scale.week) {
-        key = new Date(date.getFullYear(), date.getMonth(), date.getDay())
+        key = new Date(date.getFullYear(), date.getMonth(), 7 * Math.floor(date.getDate()/7))
       } else if (scale == scaleEnum.Scale.month) {
         key = new Date(date.getFullYear(), date.getMonth(), 1)
       } else if (scale == scaleEnum.Scale.year) {
